@@ -1,0 +1,393 @@
+﻿===== REPOSITORIES INDEX =====
+import "server-only";
+import type { ProductRepository, CategoryRepository } from "@/lib/repositories/contracts";
+import { MockProductRepository } from "@/lib/repositories/mock/mock-product-repository";
+import { MockCategoryRepository } from "@/lib/repositories/mock/mock-category-repository";
+import { TinyProductRepository } from "@/lib/repositories/tiny/tiny-product-repository";
+import { TinyCategoryRepository } from "@/lib/repositories/tiny/tiny-category-repository";
+import { dataSourceConfig, validateTinyEnv } from "@/lib/env";
+
+/**
+ * Single composition root for the data layer â€” the only file that
+ * decides which repository implementation backs the app.
+ *
+ * Controlled by `DATA_SOURCE` (see .env.example):
+ *   - "mock" (default): MockProductRepository/MockCategoryRepository.
+ *   - "tiny": TinyProductRepository/TinyCategoryRepository, calling the
+ *     real Tiny ERP API v3 â€” see docs/API_TINY.md.
+ *
+ * Safety net: if `DATA_SOURCE=tiny` but the required credentials aren't
+ * configured, this falls back to mock at startup (with a warning) rather
+ * than instantiating a Tiny repository that would fail on every request.
+ * This is separate from the *runtime* fallback inside
+ * TinyProductRepository itself (which falls back per-request if a
+ * healthy-looking config still fails against the real API) â€” see
+ * docs/API_TINY.md Â§9.
+ *
+ * Marked `server-only`: this file (and everything under
+ * lib/repositories/tiny/) must never be reachable from a Client
+ * Component. Client-side data fetching goes through the Next.js Route
+ * Handlers in src/app/api/**, which import this file safely because
+ * Route Handlers only ever run on the server. See docs/ARCHITECTURE.md.
+ */
+
+function resolveDataSource(): "mock" | "tiny" {
+  if (dataSourceConfig.source === "tiny") {
+    const validation = validateTinyEnv();
+    if (!validation.ok) {
+      console.warn(`[config] ${validation.message} Usando o catÃ¡logo mock em vez de falhar em toda requisiÃ§Ã£o.`);
+      return "mock";
+    }
+  }
+  return dataSourceConfig.source;
+}
+
+const activeSource = resolveDataSource();
+
+export const productRepository: ProductRepository =
+  activeSource === "tiny" ? new TinyProductRepository() : new MockProductRepository();
+
+export const categoryRepository: CategoryRepository =
+  activeSource === "tiny" ? new TinyCategoryRepository() : new MockCategoryRepository();
+
+===== CONTRACTS =====
+import type { Category, Product } from "@/types";
+import type { ProductQuery, ProductQueryResult } from "@/lib/repositories/product-query";
+
+/**
+ * Contract for reading product data, regardless of where it comes from.
+ *
+ * `query()` (added Sprint 6) is the single entry point for search,
+ * category filtering, sorting, and pagination â€” see
+ * src/lib/repositories/product-query.ts for the shared engine both
+ * implementations below call. `findAll`/`findByCategory`/`search` remain
+ * for existing callers and are implemented as thin wrappers over
+ * `query()` in both repositories â€” never a second, divergent filtering
+ * implementation.
+ *
+ * Today: MockProductRepository (src/lib/repositories/mock/) reads from
+ * the static catalog in src/lib/data/products.ts.
+ *
+ * Sprint 4: TinyProductRepository implements this same interface against
+ * the Tiny ERP API (see docs/API_TINY.md). Nothing outside
+ * src/lib/repositories/index.ts needs to change when that happens â€” every
+ * hook, service, and page consumes this interface, never a concrete
+ * implementation directly.
+ *
+ * All methods are async on purpose, even though the mock implementation
+ * is instant â€” this is what makes the interface honest about what a real
+ * network-backed implementation will look like.
+ */
+export interface ProductRepository {
+  query(params: ProductQuery): Promise<ProductQueryResult>;
+  findAll(): Promise<Product[]>;
+  findBySlug(slug: string): Promise<Product | undefined>;
+  findByCategory(categorySlug: string): Promise<Product[]>;
+  search(query: string): Promise<Product[]>;
+}
+
+/**
+ * Contract for reading category data. Kept separate from
+ * ProductRepository because the two may end up backed by different
+ * sources even after the Tiny integration (e.g. categories curated by
+ * hand in this app, products fetched live from Tiny) â€” see
+ * docs/API_TINY.md Â§3 on why categories might not map 1:1 to Tiny.
+ */
+export interface CategoryRepository {
+  findAll(): Promise<Category[]>;
+}
+
+===== PRISMA PRODUCT/CATEGORY =====
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id               String  @id @default(cuid())
+  tinyId           String  @unique
+  sku              String? @unique
+  name             String
+  slug             String  @unique
+  description      String?
+  shortDescription String?
+
+  price          Decimal  @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+
+  stock  Int     @default(0)
+  active Boolean @default(true)
+
+  brandId      String?
+  categoryId   String?
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  brand    Brand?    @relation(fields: [brandId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  images   ProductImage[]
+  variants ProductVariant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tinyId])
+  @@index([sku])
+  @@index([slug])
+  @@index([name])
+  @@index([categoryId])
+  @@index([departmentId])
+  @@index([brandId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  position  Int     @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id        String @id @default(cuid())
+  productId String
+
+  tinyId String? @unique
+  sku    String? @unique
+  name   String?
+
+  price  Decimal? @db.Decimal(10, 2)
+  stock  Int      @default(0)
+  active Boolean  @default(true)
+
+  attributes Json?
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Brand {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+===== PRODUCT TYPE =====
+/**
+ * Domain types for Love Mimos Express.
+ *
+ * These are intentionally shaped so that swapping the mock data source
+ * (lib/data/products.ts) for a real integration (e.g. Tiny ERP API) only
+ * requires writing an adapter that maps the external payload to this
+ * shape â€” nothing in the UI layer should need to change.
+ */
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string; // lucide-react icon name, resolved in components/ui/CategoryIcon.tsx
+};
+
+/**
+ * A brand as a first-class entity â€” not just a string on `Product`.
+ * Elevated to its own type (Sprint: CatÃ¡logo Facetado, domain
+ * consolidation) specifically because Marca needs more than a filter
+ * value: a brand page, a brand banner, a brand description, and its own
+ * SEO â€” none of which the other facets (tÃ©cnica, efeito, curvatura...)
+ * need. That's the entire reason Brand gets this treatment and the rest
+ * stay as plain `attributes` â€” see docs/features/faceted-catalog.md.
+ */
+export type Brand = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string;
+  bannerImage?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+/**
+ * Reference back to the record in whatever external system a product
+ * (or variant) was synced from â€” e.g. `{ source: "tiny", id: "12345" }`.
+ * Deliberately generic (not `tinyId`): the domain doesn't know or care
+ * which source it came from, only that *some* source has an ID for it,
+ * so a future sync can find "this same thing" again instead of
+ * creating a duplicate. See docs/features/tiny-single-product-sync.md.
+ */
+export type ExternalRef = {
+  source: string; // e.g. "tiny", "nuvemshop"
+  id: string;
+};
+
+export type ProductVariant = {
+  id: string;
+  label: string; // e.g. "Volume Russo 0.07 D", "Curvatura C"
+  priceModifier?: number; // added to base price, defaults to 0
+  externalRef?: ExternalRef;
+  /**
+   * When the variation dimension itself IS a facet (most commonly
+   * "Cor" â€” a product genuinely available in several real colors), the
+   * per-variant value lives here rather than being forced into a single
+   * value on `Product.attributes` (which would misrepresent every color
+   * but one). Facet-aware filtering considers both the product's own
+   * `attributes` and every variant's `attributes` â€” see
+   * `src/lib/repositories/product-query.ts`.
+   */
+  attributes?: Record<string, string>;
+};
+
+export type Product = {
+  id: string; // maps to Tiny "codigo"/id in a future integration
+  slug: string;
+  name: string;
+  shortDescription: string;
+  description: string;
+  price: number; // current price, in BRL
+  compareAtPrice?: number; // original price, if on promotion
+  stock: number;
+
+  // Identidade/estoque â€” campos singulares, nunca "navegÃ¡veis" (nÃ£o Ã© o
+  // tipo de coisa que alguÃ©m filtra a vitrine por). Mapeiam 1:1 com a
+  // Tiny quando essa integraÃ§Ã£o existir â€” ver docs/API_TINY.md.
+  sku?: string; // maps to Tiny "codigo" (SKU) explicitly
+  barcode?: string; // CÃ³digo de barras â€” maps to Tiny "codigo de barras"
+  manufacturer?: string; // Fabricante â€” a empresa que produz fisicamente o item, distinto da marca comercial (ver `brandSlug`)
+  weight?: number; // kg â€” nome de campo na Tiny ainda nÃ£o confirmado, ver docs/features/tiny-single-product-sync.md
+  dimensions?: { height: number; width: number; length: number }; // cm â€” idem
+  unit?: string; // unidade de medida/venda â€” ex.: "UN", "CX", "KG"
+  ncm?: string; // Nomenclatura Comum do Mercosul â€” classificaÃ§Ã£o fiscal brasileira
+  externalRef?: ExternalRef; // ver definiÃ§Ã£o de ExternalRef acima
+
+  // Categoria Principal â€” o menu simples e fixo (7 itens,
+  // src/lib/data/categories.ts). NÃ£o existe mais Categoria â†’ Subcategoria
+  // no domÃ­nio; qualquer hierarquia de uma fonte externa Ã© traduzida
+  // para categorySlug + attributes na camada de importaÃ§Ã£o daquela
+  // fonte, nunca representada aqui.
+  categorySlug: string;
+
+  // Marca â€” referÃªncia para a entidade `Brand` (src/lib/data/brands.ts).
+  // Opcional: nem todo produto tem marca conhecida.
+  brandSlug?: string;
+
+  /**
+   * Facetas de navegaÃ§Ã£o abertas e extensÃ­veis â€” linha, tÃ©cnica,
+   * efeito, curvatura, espessura, comprimento, cor, material, volume.
+   * Um produto pertence a quantos grupos fizer sentido simultaneamente,
+   * sem duplicaÃ§Ã£o, porque Ã© sÃ³ um dicionÃ¡rio chave/valor no mesmo
+   * registro. Nova faceta = uma linha em
+   * `src/lib/facets/registry.ts`, nunca uma mudanÃ§a aqui. Marca
+   * deliberadamente NÃƒO mora aqui â€” ver `Brand`/`brandSlug` acima.
+   */
+  attributes?: Record<string, string>;
+
+  /** Palavras-chave livres â€” nÃ£o sÃ£o "chave:valor" como as facetas
+   * acima, entÃ£o vivem em uma lista Ã  parte, nÃ£o dentro de `attributes`. */
+  tags?: string[];
+
+  images: string[]; // placeholder gradient ids for now, real URLs later
+  badge?: "novo" | "mais-vendido" | "promocao";
+  rating?: number; // 0-5
+  reviewCount?: number;
+  variants?: ProductVariant[];
+};
+
+/**
+ * A favorited product. Deliberately product-level only (no `variantId`)
+ * â€” unlike the cart, favoriting is "I like this item", not "I want this
+ * specific curvature/size right now" â€” matching how wishlists work in
+ * most e-commerce apps. `addedAt` isn't shown in the UI today, but
+ * enables recency-based sorting/recommendations later without a schema
+ * change â€” see docs/features/favorites.md.
+ */
+export type FavoriteEntry = {
+  productId: string;
+  addedAt: string; // ISO timestamp
+};
+
+/**
+ * A hero banner slot on the Home screen. Deliberately its own type (not
+ * hardcoded JSX) so a future admin panel (see docs/ADMIN_PANEL.md) can
+ * manage banners as data â€” today there's a single mock banner in
+ * `src/lib/data/banners.ts`; `HomeHero` already supports rendering more
+ * than one (as a carousel) without any change to this contract.
+ */
+export type HeroBanner = {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  ctaLabel: string;
+  ctaHref: string;
+  theme: "dark" | "light"; // same theme vocabulary as BrandLogo â€” dark bg+light text, or the reverse
+};
+
+export type CartLine = {
+  productId: string;
+  variantId?: string;
+  quantity: number;
+};
+
+export type CartLineWithProduct = CartLine & {
+  product: Product;
+  variant?: ProductVariant;
+  lineTotal: number;
+};
+
+/**
+ * Aggregate cart snapshot: resolved lines + derived totals. This is the
+ * shape the UI actually consumes (via useCartLines) â€” CartLine only
+ * holds IDs, Cart is what you get after resolving those IDs against the
+ * catalog and computing totals. See src/services/cart-service.ts.
+ */
+export type Cart = {
+  lines: CartLineWithProduct[];
+  subtotal: number;
+  itemCount: number;
+};

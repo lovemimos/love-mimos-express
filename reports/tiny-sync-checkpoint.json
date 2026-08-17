@@ -1,0 +1,1102 @@
+{
+  "startedAt": "2026-08-12T02:36:38.453Z",
+  "updatedAt": "2026-08-12T03:32:22.192Z",
+  "totalCatalog": 583,
+  "completed": [
+    "738050720",
+    "738050739",
+    "738050756",
+    "804739603",
+    "744931523",
+    "738050765",
+    "738050794",
+    "738050839",
+    "806076669",
+    "806076684",
+    "806076689",
+    "741047472",
+    "741047485",
+    "741047495",
+    "741047490",
+    "741048848",
+    "741048855",
+    "805090592",
+    "741048860",
+    "738050894",
+    "738050939",
+    "738050963",
+    "738051026",
+    "738051031",
+    "801510681",
+    "738051042",
+    "738051055",
+    "738051070",
+    "738051080",
+    "806075108",
+    "804885674",
+    "738051110",
+    "738051149",
+    "738051186",
+    "738051217",
+    "738051252",
+    "738051299",
+    "738051323",
+    "738051343",
+    "806077341",
+    "803643763",
+    "738051559",
+    "805217395",
+    "805217398",
+    "805217392",
+    "810419345",
+    "810419348",
+    "761124487",
+    "738051635",
+    "804848609",
+    "804848612",
+    "804848615",
+    "804848606",
+    "803625147",
+    "741044834",
+    "741044838",
+    "741044842",
+    "741044846",
+    "741044822",
+    "741044826",
+    "741044850",
+    "741044707",
+    "741044780",
+    "741044776",
+    "741044760",
+    "741044788",
+    "741044784",
+    "741044792",
+    "738051438",
+    "738051426",
+    "806076360",
+    "806076352",
+    "806076356",
+    "738051758",
+    "803627550",
+    "741047544",
+    "806076192",
+    "806076197",
+    "806076203",
+    "741047534",
+    "741047539",
+    "806076185",
+    "738051803",
+    "741047552",
+    "741044605",
+    "741044611",
+    "741044615",
+    "741044619",
+    "741044593",
+    "741044597",
+    "741044627",
+    "741044623",
+    "766411795",
+    "766411816",
+    "766411825",
+    "766411831",
+    "766411806",
+    "766411812",
+    "766411834",
+    "766411837",
+    "738051811",
+    "803628712",
+    "803628715",
+    "803628719",
+    "803628706",
+    "803628709",
+    "803628726",
+    "803628731",
+    "803628735",
+    "806077272",
+    "806077280",
+    "738051571",
+    "803608828",
+    "803608831",
+    "803608834",
+    "803608837",
+    "803608840",
+    "803608822",
+    "803608825",
+    "803608843",
+    "803608846",
+    "741048739",
+    "738051453",
+    "741044506",
+    "738051457",
+    "738051463",
+    "738051466",
+    "741044558",
+    "741044563",
+    "741044539",
+    "741044544",
+    "741044568",
+    "738051471",
+    "738051590",
+    "803620148",
+    "803620151",
+    "803850257",
+    "806075214",
+    "806075241",
+    "806075245",
+    "806075249",
+    "806075254",
+    "806075258",
+    "806075233",
+    "806075237",
+    "741048518",
+    "741048526",
+    "806075266",
+    "806075262",
+    "738051476",
+    "806075270",
+    "741044634",
+    "806075308",
+    "806075320",
+    "806075327",
+    "741048369",
+    "741048379",
+    "804742884",
+    "804740643",
+    "804742292",
+    "804741385",
+    "804742448",
+    "804743475",
+    "738051919",
+    "806077462",
+    "738051922",
+    "806077449",
+    "738051904",
+    "741047296",
+    "738051941",
+    "744931408",
+    "738051950",
+    "738051956",
+    "812515727",
+    "738051961",
+    "738051971",
+    "738052002",
+    "806077442",
+    "738052008",
+    "738052022",
+    "738052058",
+    "738052074",
+    "738052083",
+    "738052097",
+    "738052104",
+    "738052116",
+    "738052148",
+    "738052169",
+    "738052221",
+    "738052229",
+    "806075479",
+    "806076230",
+    "804879004",
+    "738052269",
+    "738052356",
+    "738052376",
+    "806077288",
+    "738052409",
+    "738052425",
+    "748826699",
+    "803642694",
+    "803642177",
+    "738052450",
+    "738052458",
+    "738052465",
+    "738052486",
+    "738052516",
+    "738052525",
+    "738052539",
+    "806076128",
+    "738052559",
+    "738052576",
+    "738052597",
+    "738052600",
+    "738052610",
+    "738052641",
+    "738052682",
+    "738052691",
+    "738052707",
+    "738052730",
+    "738052743",
+    "738052755",
+    "738052763",
+    "738052772",
+    "738052780",
+    "738052799",
+    "741049245",
+    "741049258",
+    "741048756",
+    "741048799",
+    "741048788",
+    "741048781",
+    "741048775",
+    "741048794",
+    "805048777",
+    "805048785",
+    "805048782",
+    "805048788",
+    "805048791",
+    "806077361",
+    "806077377",
+    "806077384",
+    "806077394",
+    "738052804",
+    "738052814",
+    "738052831",
+    "738052853",
+    "738052857",
+    "738052863",
+    "738052870",
+    "738052882",
+    "738052928",
+    "738052936",
+    "738052945",
+    "741047693",
+    "741047737",
+    "741047731",
+    "741047725",
+    "741047715",
+    "741047720",
+    "741047170",
+    "738052955",
+    "741047161",
+    "738052969",
+    "738052978",
+    "738052985",
+    "738053009",
+    "738053015",
+    "738053023",
+    "741048813",
+    "741048822",
+    "741048828",
+    "738053057",
+    "738053067",
+    "738053078",
+    "738053088",
+    "738053096",
+    "738053105",
+    "738053134",
+    "738053143",
+    "738053151",
+    "738053163",
+    "770470790",
+    "806077317",
+    "738053179",
+    "738053186",
+    "738053198",
+    "738053212",
+    "738053243",
+    "738053256",
+    "738053270",
+    "738053275",
+    "738053301",
+    "738053321",
+    "805051162",
+    "738053328",
+    "738053661",
+    "744931460",
+    "738053337",
+    "806077430",
+    "806077454",
+    "738053373",
+    "738053379",
+    "738053388",
+    "738053395",
+    "738053404",
+    "738053420",
+    "806077480",
+    "738053441",
+    "738053453",
+    "738053460",
+    "738053467",
+    "738053533",
+    "738053553",
+    "738053595",
+    "738053609",
+    "806077401",
+    "738053616",
+    "738053624",
+    "738053635",
+    "744931475",
+    "738053641",
+    "738053647",
+    "744931497",
+    "738053672",
+    "738053685",
+    "806077417",
+    "738053692",
+    "738053697",
+    "738053709",
+    "738053714",
+    "738053737",
+    "738053743",
+    "738053750",
+    "738053759",
+    "738053770",
+    "738053778",
+    "738053788",
+    "738053793",
+    "738053806",
+    "741047041",
+    "741047058",
+    "741047053",
+    "738053814",
+    "738053837",
+    "738053842",
+    "738053849",
+    "738053857",
+    "738053861",
+    "738053867",
+    "738053877",
+    "738053889",
+    "753581661",
+    "738053897",
+    "738053914",
+    "738053946",
+    "738053961",
+    "741049133",
+    "741049184",
+    "741049208",
+    "741049189",
+    "741049218",
+    "741049225",
+    "741049195",
+    "741049202",
+    "738053964",
+    "738053970",
+    "805052600",
+    "738053983",
+    "738053987",
+    "738054001",
+    "738054012",
+    "738054040",
+    "738054049",
+    "738054072",
+    "738054080",
+    "738054094",
+    "738054101",
+    "738054111",
+    "738054118",
+    "738054154",
+    "738054184",
+    "738054217",
+    "738054228",
+    "738054264",
+    "753576984",
+    "738054277",
+    "801539789",
+    "738054281",
+    "738054286",
+    "738054298",
+    "738054310",
+    "738054316",
+    "738054319",
+    "738054325",
+    "738054330",
+    "738054352",
+    "738054366",
+    "738054376",
+    "738054393",
+    "738054414",
+    "738054439",
+    "738054465",
+    "738054476",
+    "738054483",
+    "738054499",
+    "738054521",
+    "806076792",
+    "738054557",
+    "738054577",
+    "738054595",
+    "738050854",
+    "738053110"
+  ],
+  "failed": [
+    {
+      "id": "738051208",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "805217402",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803625150",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "738051384",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044830",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044772",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044768",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044764",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803627538",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803627541",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803627544",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803627547",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "806076384",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044577",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "741044601",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "766411819",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "766411822",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803628722",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803628700",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "803628703",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: api-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\nAssertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 94\r\n"
+    },
+    {
+      "id": "806075335",
+      "output": "SYNC_ERROR\nError: Connection terminated unexpectedly\n    at C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\pg\\lib\\client.js:694:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async PgTransaction.performIO (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\adapter-pg\\dist\\index.js:654:22)\n    at async PgTransaction.executeRaw (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\adapter-pg\\dist\\index.js:643:13)\n    at async n (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:435:13)\n    at async jt.#d (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:476:7)\n    at async <anonymous> (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:239:9)\n    at async <anonymous> (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:404:14)\n    at async jt.#c (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:420:14)\n    at async jt.#p (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\node_modules\\@prisma\\client-engine-runtime\\src\\transaction-manager\\transaction-manager.ts:402:12)\n"
+    },
+    {
+      "id": "806075340",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075287",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075298",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075347",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075354",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075359",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075414",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075409",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075402",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075398",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075394",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075390",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075423",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075418",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075431",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075427",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044798",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075456",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075460",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075464",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075469",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075473",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075448",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075452",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075478",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044854",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044876",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044880",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044884",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044888",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044892",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044872",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044868",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044896",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075518",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075562",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075566",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075572",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075577",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075583",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075552",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075556",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075593",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075588",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075597",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075634",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075638",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075643",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075647",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075630",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075625",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076212",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076226",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051700",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076144",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044957",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044981",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044985",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044989",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044993",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044997",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044973",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044977",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045001",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045005",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045016",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045047",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045042",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045034",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045038",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "804858231",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047304",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047323",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047330",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047335",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047340",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047345",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047355",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047350",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047317",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047781",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047785",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047789",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047793",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047777",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806077334",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806077293",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076350",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075704",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075736",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075731",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075722",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806075726",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076014",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076050",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076057",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076064",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076071",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076078",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076096",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076088",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076043",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047763",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076309",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076313",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076317",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076322",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047798",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047808",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741047803",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076305",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045054",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045090",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045094",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045098",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045103",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045110",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045081",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045086",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045121",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741045116",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051838",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051851",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048304",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048312",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048317",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051863",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048322",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048330",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048335",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741048340",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076488",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076504",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076512",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076518",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044658",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044663",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044668",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044673",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044678",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044648",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044653",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044683",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "741044688",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051480",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051866",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "806076393",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051870",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    },
+    {
+      "id": "738051883",
+      "output": "SYNC_ERROR\nError: Tiny v2 connection failed: network-error\n    at main (C:\\Users\\Cristiano Silva\\Downloads\\love-mimos-express (5)\\love-mimos-express\\scripts\\sync-tiny-v2-to-db.ts:24:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n"
+    }
+  ]
+}

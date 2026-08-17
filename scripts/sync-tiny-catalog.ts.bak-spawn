@@ -1,0 +1,186 @@
+﻿import { loadEnvConfig } from "@next/env";
+import { spawn } from "node:child_process";
+
+loadEnvConfig(process.cwd(), true, { info: () => {}, error: () => {} });
+
+const token = process.env.TINY_API_TOKEN;
+if (!token) throw new Error("TINY_API_TOKEN ausente");
+
+const BATCH_LIMIT = Number(process.env.TINY_SYNC_LIMIT || 10);
+const DELAY_MS = 700;
+
+const sleep = (ms:number) => new Promise(r => setTimeout(r, ms));
+
+async function tiny(endpoint:string, data:Record<string,string>) {
+  const body = new URLSearchParams({
+    token,
+    formato: "JSON",
+    ...data,
+  });
+
+  const res = await fetch(`https://api.tiny.com.br/api2/${endpoint}`, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body,
+  });
+
+  if (!res.ok) throw new Error(`Tiny HTTP ${res.status}`);
+  return res.json();
+}
+
+async function collectIds() {
+  const ids:string[] = [];
+  let page = 1;
+
+  while (ids.length < BATCH_LIMIT) {
+    const json:any = await tiny("produtos.pesquisa.php", {
+      pagina: String(page),
+      situacao: "A",
+    });
+
+    const retorno = json?.retorno;
+
+    if (retorno?.status === "Erro") {
+      const code = retorno?.codigo_erro;
+      if (code === 20) break;
+      throw new Error(JSON.stringify(retorno));
+    }
+
+    const produtos = retorno?.produtos ?? [];
+    if (!produtos.length) break;
+
+    for (const item of produtos) {
+      const produto = item?.produto;
+      if (produto?.id) ids.push(String(produto.id));
+      if (ids.length >= BATCH_LIMIT) break;
+    }
+
+    if (produtos.length < 100) break;
+    page++;
+    await sleep(DELAY_MS);
+  }
+
+  return ids;
+}
+
+function runSync(id:string) {
+  return new Promise<{id:string;ok:boolean;output:string}>((resolve) => {
+    const child = spawn(
+      process.platform === "win32" ? "npx.cmd" : "npx",
+      [
+        "tsx",
+        "--conditions=react-server",
+        "./scripts/sync-tiny-v2-to-db.ts",
+        id
+      ],
+      {
+        cwd: process.cwd(),
+        shell: false,
+      }
+    );
+
+    let output = "";
+
+    child.stdout.on("data", d => {
+      const text = d.toString();
+      output += text;
+      process.stdout.write(text);
+    });
+
+    child.stderr.on("data", d => {
+      const text = d.toString();
+      output += text;
+      process.stderr.write(text);
+    });
+
+    child.on("close", code => {
+      resolve({
+        id,
+        ok: code === 0 && output.includes("SYNC_OK"),
+        output,
+      });
+    });
+  });
+}
+
+async function main() {
+  console.log("======================================");
+  console.log(" LOVE MIMOS - SYNC CONTROLADO TINY");
+  console.log("======================================");
+  console.log(`Limite desta rodada: ${BATCH_LIMIT}`);
+  console.log("");
+
+  const ids = await collectIds();
+
+  console.log(`Produtos encontrados para teste: ${ids.length}`);
+  console.log("");
+
+  const results:any[] = [];
+
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+
+    console.log("");
+    console.log(`===== ${i + 1}/${ids.length} | Tiny ${id} =====`);
+
+    const result = await runSync(id);
+    results.push(result);
+
+    console.log(
+      result.ok
+        ? `OK Tiny ${id}`
+        : `ERRO Tiny ${id}`
+    );
+
+    await sleep(DELAY_MS);
+  }
+
+  const ok = results.filter(r => r.ok).length;
+  const fail = results.length - ok;
+
+  const report = {
+    executedAt: new Date().toISOString(),
+    total: results.length,
+    success: ok,
+    failed: fail,
+    failures: results
+      .filter(r => !r.ok)
+      .map(r => ({
+        id: r.id,
+        output: r.output.slice(-3000),
+      })),
+  };
+
+  const fs = await import("node:fs/promises");
+
+  await fs.mkdir("./reports", { recursive: true });
+  await fs.writeFile(
+    "./reports/tiny-sync-last.json",
+    JSON.stringify(report, null, 2),
+    "utf8"
+  );
+
+  console.log("");
+  console.log("======================================");
+  console.log(" RESULTADO");
+  console.log("======================================");
+  console.log(`TOTAL: ${results.length}`);
+  console.log(`OK: ${ok}`);
+  console.log(`ERROS: ${fail}`);
+  console.log("Relatorio: reports/tiny-sync-last.json");
+
+  if (fail > 0) {
+    console.log("");
+    console.log("LOTE COMPLETO NAO LIBERADO.");
+    process.exitCode = 1;
+  } else {
+    console.log("");
+    console.log("LOTE TESTE APROVADO.");
+  }
+}
+
+main().catch(err => {
+  console.error("SYNC_CATALOG_ERROR");
+  console.error(err);
+  process.exit(1);
+});

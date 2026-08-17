@@ -1,0 +1,982 @@
+
+
+==================== .\src\app\api\products\route.ts ====================
+
+import { NextResponse } from "next/server";
+import { catalogService } from "@/services/catalog-service";
+import type { ProductQuery, ProductSortOrder } from "@/lib/repositories/product-query";
+import { FACET_KEYS } from "@/lib/facets/registry";
+
+export const dynamic = "force-dynamic";
+
+const SORT_PARAM_VALUES: ProductSortOrder[] = ["relevancia", "menor-preco", "maior-preco", "nome-asc"];
+const BADGE_PARAM_VALUES = ["novo", "mais-vendido", "promocao"] as const;
+
+function parseIntParam(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function parseFloatParam(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+/**
+ * GET /api/products?q=cola&categoria=adesivos&ordem=menor-preco&pagina=1&limite=12&badge=mais-vendido
+ *   &atributo_marca=Maria+Sasha,Fadvan&precoMin=20&precoMax=80
+ *
+ * This route exists so Client Components (Home, Busca) can read the
+ * catalog without ever importing `catalogService`/Tiny code into the
+ * browser bundle — see docs/ARCHITECTURE.md. It's a thin pass-through:
+ * all the actual query logic lives in `catalogService` →
+ * `ProductRepository.query()` → the shared engine in
+ * src/lib/repositories/product-query.ts. Parameter *names* here are
+ * Love Mimos' own (Portuguese, URL-friendly) vocabulary — never Tiny's
+ * — see docs/features/home-and-search.md.
+ *
+ * Facet params are `atributo_{chave}=valor1,valor2` — one param per
+ * facet key from `FACET_REGISTRY` (src/lib/facets/registry.ts). Adding
+ * a new facet to the registry makes it filterable here automatically,
+ * no route change needed.
+ */
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const sortParam = searchParams.get("ordem");
+  const badgeParam = searchParams.get("badge");
+
+  const attributes: Record<string, string[]> = {};
+  for (const key of FACET_KEYS) {
+    const raw = searchParams.get(`atributo_${key}`);
+    if (raw) attributes[key] = raw.split(",").filter(Boolean);
+  }
+
+  const query: ProductQuery = {
+    search: searchParams.get("q") ?? undefined,
+    categorySlug: searchParams.get("categoria") ?? undefined,
+    sort: sortParam && (SORT_PARAM_VALUES as string[]).includes(sortParam) ? (sortParam as ProductSortOrder) : undefined,
+    page: parseIntParam(searchParams.get("pagina")),
+    pageSize: parseIntParam(searchParams.get("limite")),
+    onlyAvailable: searchParams.get("disponivel") === "1",
+    featuredOnly: searchParams.get("destaque") === "1",
+    badge:
+      badgeParam && (BADGE_PARAM_VALUES as readonly string[]).includes(badgeParam)
+        ? (badgeParam as ProductQuery["badge"])
+        : undefined,
+    attributes: Object.keys(attributes).length > 0 ? attributes : undefined,
+    priceMin: parseFloatParam(searchParams.get("precoMin")),
+    priceMax: parseFloatParam(searchParams.get("precoMax")),
+  };
+
+  try {
+    const result = await catalogService.queryProducts(query);
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error("[api/products] falha ao carregar catálogo:", err);
+    return NextResponse.json(
+      { items: [], total: 0, page: 1, pageSize: 12, hasMore: false, error: "Não foi possível carregar o catálogo." },
+      { status: 502 }
+    );
+  }
+}
+
+==================== .\src\app\api\categories\route.ts ====================
+
+import { NextResponse } from "next/server";
+import { catalogService } from "@/services/catalog-service";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    const categories = await catalogService.listCategories();
+    return NextResponse.json({ categories });
+  } catch (err) {
+    console.error("[api/categories] falha ao carregar categorias:", err);
+    return NextResponse.json(
+      { categories: [], error: "Não foi possível carregar as categorias." },
+      { status: 502 }
+    );
+  }
+}
+
+==================== .\src\hooks\useProducts.ts ====================
+
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { products as mockProducts } from "@/lib/data/products";
+import { categories as mockCategories } from "@/lib/data/categories";
+import { applyProductQuery, type ProductQuery, type ProductQueryResult } from "@/lib/repositories/product-query";
+import type { Category } from "@/types";
+
+/**
+ * `useProductQuery` calls the `/api/products` Route Handler, never
+ * `catalogService`/Tiny code directly — that boundary is what keeps Tiny
+ * credentials and network calls entirely server-side (see
+ * docs/ARCHITECTURE.md and docs/API_TINY.md §4). Swapping the data
+ * source (mock ↔ tiny) only ever touches `DATA_SOURCE` in `.env` — this
+ * file never changes either way.
+ *
+ * `initialData` runs `applyProductQuery` against the local mock array —
+ * the exact same pure function the repositories call server-side (see
+ * src/lib/repositories/product-query.ts) — purely to avoid a loading
+ * flash on first render (see docs/ARCHITECTURE.md §5). It is NOT a
+ * second implementation of search/sort/pagination; it's the one true
+ * implementation, called from the client for this one bootstrap case.
+ */
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar ${url}: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function buildProductsUrl(query: ProductQuery): string {
+  const params = new URLSearchParams();
+  if (query.search) params.set("q", query.search);
+  if (query.categorySlug) params.set("categoria", query.categorySlug);
+  if (query.sort) params.set("ordem", query.sort);
+  if (query.page) params.set("pagina", String(query.page));
+  if (query.pageSize) params.set("limite", String(query.pageSize));
+  if (query.onlyAvailable) params.set("disponivel", "1");
+  if (query.featuredOnly) params.set("destaque", "1");
+  if (query.badge) params.set("badge", query.badge);
+  const qs = params.toString();
+  return qs ? `/api/products?${qs}` : "/api/products";
+}
+
+/**
+ * The one hook every catalog-browsing screen uses (Home, Busca). Pass a
+ * `ProductQuery` — see src/lib/repositories/product-query.ts for the
+ * full shape (search, categorySlug, sort, page, pageSize, ...).
+ *
+ * `placeholderData: keepPreviousData` avoids a flash back to an empty/
+ * loading grid while a new page or filter is being fetched — the
+ * previous page's results stay visible (with `isFetching` true) until
+ * the new ones arrive, which reads as "updating", not "reset".
+ */
+export function useProductQuery(query: ProductQuery) {
+  return useQuery({
+    queryKey: ["products", "query", query],
+    queryFn: () => fetchJson<ProductQueryResult>(buildProductsUrl(query)),
+    initialData: () => applyProductQuery(mockProducts, query),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCategories() {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { categories } = await fetchJson<{ categories: Category[] }>(
+        "/api/categories"
+      );
+      return categories;
+    },
+    initialData: mockCategories,
+  });
+}
+
+==================== .\src\lib\repositories\product-query.ts ====================
+
+import type { Product } from "@/types";
+import { searchTerms, normalizeSearchText } from "@/utils/normalize-text";
+
+/**
+ * Sort orders the UI can request. Deliberately small and named for what
+ * the *shopper* is asking for ("cheapest first"), not for any specific
+ * data source's sort syntax — this is exactly the kind of Tiny-specific
+ * coupling docs/API_TINY.md warns against baking into our contract.
+ */
+export type ProductSortOrder = "relevancia" | "menor-preco" | "maior-preco" | "nome-asc";
+
+const VALID_SORTS: ProductSortOrder[] = ["relevancia", "menor-preco", "maior-preco", "nome-asc"];
+
+export const DEFAULT_PAGE_SIZE = 12;
+export const MAX_PAGE_SIZE = 100;
+
+/**
+ * The one query shape every `ProductRepository` implementation supports.
+ * All fields optional — an empty query just means "everything, page 1".
+ */
+export type ProductQuery = {
+  search?: string;
+  categorySlug?: string;
+  /** Filters by `Product.brandSlug` — a dedicated filter, not part of
+   * `attributes`, because Brand is a first-class entity (see
+   * src/types/index.ts and docs/features/faceted-catalog.md), not a
+   * generic facet string. */
+  brandSlug?: string;
+  sort?: ProductSortOrder;
+  page?: number; // 1-based
+  pageSize?: number;
+  onlyAvailable?: boolean; // stock > 0
+  featuredOnly?: boolean; // has any marketing badge (novo/mais-vendido/promocao)
+  badge?: Product["badge"]; // a *specific* badge — e.g. "mais-vendido" for a Best Sellers section (Sprint 9)
+  /**
+   * Faceted attribute filters — e.g. `{ cor: ["Preto", "Azul"] }`.
+   * Semantics: a product matches a facet key if EITHER its own
+   * `attributes[key]` OR any of its variants' `attributes[key]` is
+   * included in the given array (OR within a facet); a product must
+   * match every facet key present in this object (AND across facets).
+   * See docs/features/faceted-catalog.md.
+   */
+  attributes?: Record<string, string[]>;
+  /** Free-keyword filter over `Product.tags` — a product matches if it
+   * has at least one of the given tags. */
+  tags?: string[];
+  priceMin?: number;
+  priceMax?: number;
+};
+
+export type ProductQueryResult = {
+  items: Product[];
+  total: number; // total matches across all pages, not just this page's length
+  page: number; // the page actually served (after fallback normalization)
+  pageSize: number; // the page size actually served (after fallback normalization)
+  hasMore: boolean;
+};
+
+/**
+ * Normalizes a raw (possibly attacker- or typo-supplied, e.g. from a URL
+ * query string) `ProductQuery` into safe values — see requirement in
+ * docs/features/product.md and Sprint 6 task 11. Never throws; always
+ * returns something usable.
+ */
+export function normalizeProductQuery(raw: ProductQuery): Required<
+  Pick<ProductQuery, "sort" | "page" | "pageSize">
+> &
+  ProductQuery {
+  const sort = raw.sort && VALID_SORTS.includes(raw.sort) ? raw.sort : "relevancia";
+
+  const rawPage = raw.page;
+  const page = Number.isFinite(rawPage) && (rawPage as number) >= 1 ? Math.floor(rawPage as number) : 1;
+
+  const rawPageSize = raw.pageSize;
+  let pageSize =
+    Number.isFinite(rawPageSize) && (rawPageSize as number) > 0
+      ? Math.floor(rawPageSize as number)
+      : DEFAULT_PAGE_SIZE;
+  if (pageSize > MAX_PAGE_SIZE) pageSize = MAX_PAGE_SIZE;
+
+  return { ...raw, sort, page, pageSize };
+}
+
+/**
+ * The actual query engine: filter → search-score → sort → paginate.
+ * Pure function over an in-memory `Product[]` — both
+ * `MockProductRepository` and `TinyProductRepository` call this over
+ * their respective full catalogs (mock: the static array; Tiny: the
+ * already-fetched/cached mapped catalog — see docs/API_TINY.md §11 on
+ * why Tiny can't push this filtering down to its own API). This is the
+ * single place search/sort/pagination logic lives — never duplicated
+ * per repository, per page, or between client and server.
+ */
+export function applyProductQuery(products: Product[], rawQuery: ProductQuery): ProductQueryResult {
+  const query = normalizeProductQuery(rawQuery);
+  let results = products;
+
+  if (query.categorySlug) {
+    results = results.filter((p) => p.categorySlug === query.categorySlug);
+  }
+  if (query.brandSlug) {
+    results = results.filter((p) => p.brandSlug === query.brandSlug);
+  }
+  if (query.onlyAvailable) {
+    results = results.filter((p) => p.stock > 0);
+  }
+  if (query.featuredOnly) {
+    results = results.filter((p) => Boolean(p.badge));
+  }
+  if (query.badge) {
+    results = results.filter((p) => p.badge === query.badge);
+  }
+  if (query.attributes) {
+    for (const [key, values] of Object.entries(query.attributes)) {
+      if (!values || values.length === 0) continue;
+      results = results.filter((p) => productHasAttributeValue(p, key, values));
+    }
+  }
+  if (query.tags && query.tags.length > 0) {
+    results = results.filter((p) => p.tags?.some((t) => query.tags!.includes(t)));
+  }
+  if (query.priceMin !== undefined) {
+    results = results.filter((p) => p.price >= query.priceMin!);
+  }
+  if (query.priceMax !== undefined) {
+    results = results.filter((p) => p.price <= query.priceMax!);
+  }
+
+  const terms = query.search ? searchTerms(query.search) : [];
+  let scoreById: Map<string, number> | null = null;
+
+  if (terms.length > 0) {
+    scoreById = new Map();
+    results = results.filter((product) => {
+      const score = scoreMatch(product, terms);
+      if (score > 0) scoreById!.set(product.id, score);
+      return score > 0;
+    });
+  }
+
+  results = sortResults(results, query.sort, scoreById);
+
+  const total = results.length;
+  const start = (query.page - 1) * query.pageSize;
+  const items = results.slice(start, start + query.pageSize);
+  const hasMore = start + items.length < total;
+
+  return { items, total, page: query.page, pageSize: query.pageSize, hasMore };
+}
+
+/**
+ * True if the product matches a facet value either at the product
+ * level (`product.attributes[key]`) or on any of its variants
+ * (`variant.attributes[key]`) — a product with real color variants
+ * stores color per-variant (see `ProductVariant.attributes` in
+ * src/types/index.ts), so a filter that only checked the product level
+ * would silently never match those products.
+ */
+function productHasAttributeValue(product: Product, key: string, values: string[]): boolean {
+  const productValue = product.attributes?.[key];
+  if (productValue && values.includes(productValue)) return true;
+
+  return (product.variants ?? []).some((v) => {
+    const variantValue = v.attributes?.[key];
+    return variantValue && values.includes(variantValue);
+  });
+}
+
+/**
+ * Every search word must match somewhere in the product (AND semantics)
+ * — this is what makes "cilios marrom" find "Cílios Marrom Fio a Fio"
+ * regardless of accent/case, while not matching a product that only has
+ * "cilios" and nothing resembling "marrom" anywhere. Matches in the name
+ * score highest (and a match at the very start of the name scores
+ * highest of all), then short description, category, facet attribute
+ * values (marca, técnica, efeito, ...), SKU, then the long description —
+ * this ordering is what "relevância" sorts by.
+ */
+function scoreMatch(product: Product, terms: string[]): number {
+  const name = normalizeSearchText(product.name);
+  const shortDescription = normalizeSearchText(product.shortDescription);
+  const description = normalizeSearchText(product.description);
+  const category = normalizeSearchText(product.categorySlug);
+  const sku = product.sku ? normalizeSearchText(product.sku) : "";
+  const attributeValues = normalizeSearchText(
+    [
+      ...(product.attributes ? Object.values(product.attributes) : []),
+      ...(product.variants ?? []).flatMap((v) => (v.attributes ? Object.values(v.attributes) : [])),
+    ].join(" ")
+  );
+
+  let score = 0;
+
+  for (const term of terms) {
+    let termMatched = false;
+
+    if (name.includes(term)) {
+      score += name.indexOf(term) === 0 ? 40 : 25;
+      termMatched = true;
+    }
+    if (shortDescription.includes(term)) {
+      score += 12;
+      termMatched = true;
+    }
+    if (category.includes(term)) {
+      score += 8;
+      termMatched = true;
+    }
+    if (attributeValues.includes(term)) {
+      score += 8;
+      termMatched = true;
+    }
+    if (sku.includes(term)) {
+      score += 6;
+      termMatched = true;
+    }
+    if (description.includes(term)) {
+      score += 4;
+      termMatched = true;
+    }
+
+    if (!termMatched) return 0; // every word must match somewhere
+  }
+
+  return score;
+}
+
+function sortResults(
+  products: Product[],
+  sort: ProductSortOrder,
+  scoreById: Map<string, number> | null
+): Product[] {
+  switch (sort) {
+    case "menor-preco":
+      return [...products].sort((a, b) => a.price - b.price);
+    case "maior-preco":
+      return [...products].sort((a, b) => b.price - a.price);
+    case "nome-asc":
+      return [...products].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    case "relevancia":
+    default:
+      if (scoreById) {
+        return [...products].sort((a, b) => (scoreById.get(b.id) ?? 0) - (scoreById.get(a.id) ?? 0));
+      }
+      return products; // no search term: natural catalog order
+  }
+}
+
+==================== .\src\features\product\components\ProductGrid.tsx ====================
+
+"use client";
+
+import { motion } from "framer-motion";
+import { AlertTriangle } from "lucide-react";
+import ProductCard from "@/features/product/components/ProductCard";
+import { Button } from "@/components/ui/button";
+import type { Product } from "@/types";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.04 },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+};
+
+type EmptyAction = { label: string; onClick: () => void };
+
+export default function ProductGrid({
+  products,
+  isLoading = false,
+  isError = false,
+  onRetry,
+  emptyTitle = "Nada por aqui ainda",
+  emptyMessage = "Tente outra palavra ou explore outra categoria.",
+  emptyAction,
+}: {
+  products: Product[];
+  isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  emptyAction?: EmptyAction;
+}) {
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
+        <AlertTriangle size={28} className="text-error-500" />
+        <span className="font-display text-lg font-semibold text-plum">
+          Não foi possível carregar os produtos
+        </span>
+        <p className="text-sm text-ink/50">
+          Verifique sua conexão e tente novamente.
+        </p>
+        {onRetry && (
+          <Button variant="secondary" onClick={onRetry} className="mt-1">
+            Tentar novamente
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 gap-4 px-4 pb-4" aria-busy="true" aria-label="Carregando produtos">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="overflow-hidden rounded-2xl bg-neutral-0 shadow-card">
+            <div className="aspect-square animate-pulse bg-rose-100/60" />
+            <div className="flex flex-col gap-2 px-4 pb-4 pt-3">
+              <div className="h-3.5 w-4/5 animate-pulse rounded-full bg-rose-100/60" />
+              <div className="h-3.5 w-1/2 animate-pulse rounded-full bg-rose-100/60" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-2 px-6 py-16 text-center">
+        <span className="font-display text-lg font-semibold text-plum">
+          {emptyTitle}
+        </span>
+        <p className="text-sm text-ink/50">{emptyMessage}</p>
+        {emptyAction && (
+          <Button variant="secondary" onClick={emptyAction.onClick} className="mt-2">
+            {emptyAction.label}
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      className="grid grid-cols-2 gap-4 px-4 pb-4"
+    >
+      {products.map((product) => (
+        <motion.div key={product.id} variants={item}>
+          <ProductCard product={product} />
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
+==================== .\src\features\product\components\ProductCard.tsx ====================
+
+import Link from "next/link";
+import ProductImage from "@/components/ui/ProductImage";
+import ProductBadge from "@/features/product/components/ProductBadge";
+import FavoriteButton from "@/features/favorites/components/FavoriteButton";
+import Rating from "@/components/ui/Rating";
+import { formatBRL } from "@/utils/format";
+import { trackEvent } from "@/lib/analytics";
+import type { Product } from "@/types";
+
+export default function ProductCard({
+  product,
+  analyticsSource,
+}: {
+  product: Product;
+  /** Where this card is being rendered (e.g. "home_best_sellers",
+   * "search_results") — optional, purely for analytics (Sprint 9 task
+   * 12). Omitting it just means the click isn't tracked; existing
+   * callers don't need to change. */
+  analyticsSource?: string;
+}) {
+  const discount =
+    product.compareAtPrice && product.compareAtPrice > product.price
+      ? Math.round(
+          ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
+        )
+      : null;
+  const outOfStock = product.stock <= 0;
+
+  return (
+    <Link
+      href={`/produto/${product.slug}`}
+      onClick={() => {
+        if (analyticsSource) {
+          trackEvent({ name: "product_click", productId: product.id, source: analyticsSource });
+        }
+      }}
+      className="group flex flex-col overflow-hidden rounded-2xl bg-neutral-0 shadow-card transition active:scale-[0.98]"
+    >
+      <div className="relative p-2">
+        <ProductImage
+          images={product.images}
+          categorySlug={product.categorySlug}
+          alt={product.name}
+          className={outOfStock ? "opacity-50" : undefined}
+        />
+        {product.badge && !outOfStock && (
+          <div className="absolute left-4 top-4">
+            <ProductBadge type={product.badge} />
+          </div>
+        )}
+        {outOfStock && (
+          <div className="absolute left-4 top-4 rounded-full bg-ink/70 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-white">
+            Esgotado
+          </div>
+        )}
+        <FavoriteButton productId={product.id} size="sm" className="absolute right-4 top-4" />
+        {discount && !outOfStock && (
+          <div className="absolute bottom-4 right-4 rounded-full bg-plum px-2 py-0.5 text-micro font-bold text-white">
+            -{discount}%
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-2 px-4 pb-4 pt-1">
+        <h3 className="line-clamp-2 text-title text-ink">
+          {product.name}
+        </h3>
+        {product.rating && (
+          <Rating value={product.rating} count={product.reviewCount} />
+        )}
+        <div className="mt-auto flex items-baseline gap-2 pt-1">
+          <span className="font-display text-base font-semibold text-rose-500">
+            {formatBRL(product.price)}
+          </span>
+          {product.compareAtPrice && (
+            <span className="text-xs text-ink/50 line-through">
+              {formatBRL(product.compareAtPrice)}
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+==================== .\src\features\product\components\SearchPageContent.tsx ====================
+
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import SearchBar from "@/features/product/components/SearchBar";
+import CategoryPills from "@/features/product/components/CategoryPills";
+import SortSelect from "@/features/product/components/SortSelect";
+import ProductGrid from "@/features/product/components/ProductGrid";
+import { Button } from "@/components/ui/button";
+import { useProductQuery, useCategories } from "@/hooks/useProducts";
+import type { ProductSortOrder } from "@/lib/repositories/product-query";
+import type { Product } from "@/types";
+
+// Deliberately smaller than Home's page size — this is what makes
+// "carregar mais" demonstrable even against today's small mock catalog,
+// and is the page size a real (larger) Tiny catalog would actually use.
+const PAGE_SIZE = 8;
+// Only the URL write (and therefore the network refetch) is debounced —
+// the input's visible value is never delayed. See SearchBar/task 8.
+const SEARCH_SYNC_DEBOUNCE_MS = 400;
+
+function readSort(raw: string | null): ProductSortOrder {
+  if (raw === "menor-preco" || raw === "maior-preco" || raw === "nome-asc" || raw === "relevancia") {
+    return raw;
+  }
+  return "relevancia";
+}
+
+/**
+ * Supports (see docs/features/home-and-search.md):
+ *   /busca?q=cola
+ *   /busca?categoria=cilios
+ *   /busca?q=cola&categoria=adesivos&ordem=menor-preco
+ *
+ * The URL (via useSearchParams) is the source of truth for category and
+ * sort — selecting either writes to the URL immediately. The typed
+ * search term is mirrored in local state so typing feels instant, and
+ * synced to the URL after a short debounce (or immediately on Enter/
+ * submit) — this is what makes the URL always representative of the
+ * current results, shareable and refresh-safe, without debouncing the
+ * text the user sees themselves.
+ */
+export default function SearchPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const urlQuery = searchParams.get("q") ?? "";
+  const activeCategory = searchParams.get("categoria");
+  const sort = readSort(searchParams.get("ordem"));
+
+  const [query, setQuery] = useState(urlQuery);
+  const [page, setPage] = useState(1);
+  const [accumulated, setAccumulated] = useState<Product[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Back/forward navigation or a shared link can change the URL out from
+  // under us — keep the visible input in sync with it.
+  useEffect(() => {
+    setQuery(urlQuery);
+  }, [urlQuery]);
+
+  function updateUrl(next: { q?: string; categoria?: string | null; ordem?: ProductSortOrder }) {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (next.q !== undefined) {
+      if (next.q) params.set("q", next.q);
+      else params.delete("q");
+    }
+    if (next.categoria !== undefined) {
+      if (next.categoria) params.set("categoria", next.categoria);
+      else params.delete("categoria");
+    }
+    if (next.ordem !== undefined) {
+      if (next.ordem && next.ordem !== "relevancia") params.set("ordem", next.ordem);
+      else params.delete("ordem");
+    }
+
+    const qs = params.toString();
+    router.replace(qs ? `/busca?${qs}` : "/busca", { scroll: false });
+  }
+
+  function handleQueryChange(next: string) {
+    setQuery(next);
+    setPage(1);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => updateUrl({ q: next }), SEARCH_SYNC_DEBOUNCE_MS);
+  }
+
+  function handleQuerySubmit(next: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setPage(1);
+    updateUrl({ q: next });
+  }
+
+  function handleCategorySelect(slug: string | null) {
+    setPage(1);
+    updateUrl({ categoria: slug });
+  }
+
+  function handleSortChange(next: ProductSortOrder) {
+    setPage(1);
+    updateUrl({ ordem: next });
+  }
+
+  function clearFilters() {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setQuery("");
+    setPage(1);
+    router.replace("/busca", { scroll: false });
+  }
+
+  const { data, isLoading, isError, isFetching, refetch } = useProductQuery({
+    search: urlQuery || undefined,
+    categorySlug: activeCategory || undefined,
+    sort,
+    page,
+    pageSize: PAGE_SIZE,
+  });
+  const { data: categories = [] } = useCategories();
+
+  // A new filter combination always replaces the visible list; only
+  // incrementing the page (via "Carregar mais") appends to it.
+  useEffect(() => {
+    setAccumulated([]);
+  }, [urlQuery, activeCategory, sort]);
+
+  useEffect(() => {
+    if (!data) return;
+    setAccumulated((prev) => (page === 1 ? data.items : [...prev, ...data.items]));
+  }, [data, page]);
+
+  const categoryName = activeCategory
+    ? categories.find((c) => c.slug === activeCategory)?.name
+    : null;
+
+  const hasFilters = Boolean(urlQuery || activeCategory);
+
+  return (
+    <>
+      <section className="px-4 pb-2 pt-4">
+        <SearchBar
+          value={query}
+          onChange={handleQueryChange}
+          onSubmit={handleQuerySubmit}
+          placeholder="O que você procura hoje?"
+        />
+      </section>
+
+      <section className="mb-2">
+        <CategoryPills
+          categories={categories}
+          active={activeCategory}
+          onSelect={handleCategorySelect}
+        />
+      </section>
+
+      <section className="flex items-center justify-between gap-3 px-4 pb-2 pt-2">
+        <span className="text-xs text-ink/50">
+          {urlQuery
+            ? `${data?.total ?? 0} resultado(s) para "${urlQuery}"`
+            : activeCategory
+              ? `${data?.total ?? 0} produtos em ${categoryName ?? "categoria"}`
+              : `${data?.total ?? 0} produtos`}
+        </span>
+        <SortSelect value={sort} onChange={handleSortChange} />
+      </section>
+
+      <ProductGrid
+        products={accumulated}
+        isLoading={isLoading && page === 1}
+        isError={isError}
+        onRetry={() => refetch()}
+        emptyTitle={
+          urlQuery
+            ? "Nenhum resultado encontrado"
+            : activeCategory
+              ? "Sem produtos nesta categoria"
+              : "Nada por aqui ainda"
+        }
+        emptyMessage={
+          urlQuery
+            ? `Não encontramos nada para "${urlQuery}". Tente outra palavra ou remova os filtros.`
+            : "Explore outra categoria ou veja o catálogo completo."
+        }
+        emptyAction={hasFilters ? { label: "Limpar filtros", onClick: clearFilters } : undefined}
+      />
+
+      {data?.hasMore && !isLoading && (
+        <div className="flex justify-center px-4 pb-6">
+          <Button variant="secondary" onClick={() => setPage((p) => p + 1)} disabled={isFetching}>
+            {isFetching ? "Carregando..." : "Carregar mais"}
+          </Button>
+        </div>
+      )}
+    </>
+  );
+}
+
+==================== .\src\features\home\components\HomeCategories.tsx ====================
+
+"use client";
+
+import Link from "next/link";
+import HomeSection from "@/features/home/components/HomeSection";
+import HomeCarousel from "@/features/home/components/HomeCarousel";
+import CategoryIcon from "@/components/ui/CategoryIcon";
+import { useCategories } from "@/hooks/useProducts";
+import { trackEvent } from "@/lib/analytics";
+
+/**
+ * Distinct from `CategoryPills` (the in-page filter row already on
+ * Home) — this is a visual showcase with a real destination (Sprint 9
+ * task 5: "melhorar apresentação visual" + "CTA para visualizar
+ * categoria"), linking into `/busca?categoria=...` (the URL-driven
+ * search page from Sprint 6) instead of just filtering the current
+ * page. `CategoryPills` wasn't touched/removed — both coexist.
+ */
+export default function HomeCategories() {
+  const { data: categories = [], isLoading, isError } = useCategories();
+
+  return (
+    <HomeSection title="Categorias em Destaque" isLoading={isLoading} isError={isError} isEmpty={categories.length === 0}>
+      <HomeCarousel
+        items={categories}
+        keyExtractor={(c) => c.id}
+        itemClassName="w-24"
+        renderItem={(category) => (
+          <Link
+            href={`/busca?categoria=${category.slug}`}
+            onClick={() => trackEvent({ name: "category_click", categorySlug: category.slug })}
+            className="flex flex-col items-center gap-2 text-center"
+          >
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-rose-100 text-rose-500 shadow-card transition active:scale-95">
+              <CategoryIcon name={category.icon} size={24} />
+            </span>
+            <span className="line-clamp-1 text-xs font-medium text-ink">{category.name}</span>
+          </Link>
+        )}
+      />
+    </HomeSection>
+  );
+}
+
+==================== .\src\app\page.tsx ====================
+
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import Header from "@/components/layout/Header";
+import SearchBar from "@/features/product/components/SearchBar";
+import CategoryPills from "@/features/product/components/CategoryPills";
+import ProductGrid from "@/features/product/components/ProductGrid";
+import HomeHero from "@/features/home/components/HomeHero";
+import { useProductQuery, useCategories } from "@/hooks/useProducts";
+import { banners } from "@/lib/data/banners";
+import { homeRecommendationProvider } from "@/services/recommendations";
+
+// Below-the-fold, non-critical sections — code-split so the initial
+// Home bundle stays focused on the hero/search/grid (Sprint 9 task 10:
+// "lazy loading onde fizer sentido"). Each already renders `null` when
+// it has nothing to show (see HomeSection), so there's no layout jump
+// while these chunks load in.
+const HomeContinueShopping = dynamic(() => import("@/features/home/components/HomeContinueShopping"));
+const HomeFavorites = dynamic(() => import("@/features/home/components/HomeFavorites"));
+const HomeCategories = dynamic(() => import("@/features/home/components/HomeCategories"));
+const HomeBestSellers = dynamic(() => import("@/features/home/components/HomeBestSellers"));
+const HomeNewProducts = dynamic(() => import("@/features/home/components/HomeNewProducts"));
+const RecommendationSection = dynamic(() => import("@/features/recommendations/components/RecommendationSection"));
+
+// Home shows the whole (filtered) catalog at once, no "load more" — a
+// generous page size keeps that feel without a second, duplicate
+// client-side filter on top of the query. See docs/features/home-and-search.md.
+const HOME_PAGE_SIZE = 100;
+
+export default function HomePage() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const { data, isLoading, isError, refetch } = useProductQuery({
+    search: query || undefined,
+    categorySlug: activeCategory || undefined,
+    pageSize: HOME_PAGE_SIZE,
+  });
+  const { data: categories = [] } = useCategories();
+
+  const products = data?.items ?? [];
+  const total = data?.total ?? 0;
+
+  function clearFilters() {
+    setQuery("");
+    setActiveCategory(null);
+  }
+
+  return (
+    <div>
+      <Header />
+
+      <section className="px-4 pb-2 pt-4">
+        <SearchBar value={query} onChange={setQuery} />
+      </section>
+
+      <HomeHero banners={banners} />
+
+      <HomeContinueShopping />
+      <HomeFavorites />
+      <HomeCategories />
+      <HomeBestSellers />
+      <HomeNewProducts />
+      <RecommendationSection
+        provider={homeRecommendationProvider}
+        title="Recomendado para Você"
+        source="home"
+      />
+
+      <section className="mb-2">
+        <CategoryPills
+          categories={categories}
+          active={activeCategory}
+          onSelect={setActiveCategory}
+        />
+      </section>
+
+      <section className="mt-2 flex items-center justify-between px-4 pb-2">
+        <h2 className="font-display text-h2 text-plum">
+          {activeCategory
+            ? categories.find((c) => c.slug === activeCategory)?.name
+            : "Todos os produtos"}
+        </h2>
+        <span className="text-xs text-ink/50">{total} itens</span>
+      </section>
+
+      <ProductGrid
+        products={products}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        emptyTitle={query ? "Nenhum resultado encontrado" : "Sem produtos nesta categoria"}
+        emptyMessage={
+          query
+            ? `Não encontramos nada para "${query}".`
+            : "Explore outra categoria ou veja o catálogo completo."
+        }
+        emptyAction={
+          query || activeCategory
+            ? { label: "Ver todos os produtos", onClick: clearFilters }
+            : undefined
+        }
+      />
+    </div>
+  );
+}

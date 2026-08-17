@@ -1,0 +1,27 @@
+node_modules
+.next
+out
+npm-debug.log*
+.DS_Store
+coverage
+*.tsbuildinfo
+import-preview
+
+# Todas as variantes de arquivo de ambiente do Next.js (.env, .env.local,
+# .env.development, .env.production, .env.test, .env.*.local, etc.) —
+# nenhuma delas deve ser versionada, mesmo que hoje só .env seja usada
+# de fato neste projeto. .env.example é a única exceção deliberada:
+# não tem valores reais, só nomes de variável, e precisa ficar commitado.
+.env*
+!.env.example
+
+# Padrões comuns de arquivo de credencial/chave — nenhum existe neste
+# projeto hoje, mas ignorados defensivamente para nunca serem commitados
+# por engano no futuro.
+*.pem
+*.key
+*.p12
+service-account*.json
+*-credentials.json
+
+/generated/prisma

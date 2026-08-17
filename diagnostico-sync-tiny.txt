@@ -1,0 +1,1310 @@
+=== DIAGNOSTICO COMPLETO TINY -> POSTGRES ===
+
+
+========== .\src\types\index.ts ==========
+/**
+ * Domain types for Love Mimos Express.
+ *
+ * These are intentionally shaped so that swapping the mock data source
+ * (lib/data/products.ts) for a real integration (e.g. Tiny ERP API) only
+ * requires writing an adapter that maps the external payload to this
+ * shape — nothing in the UI layer should need to change.
+ */
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string; // lucide-react icon name, resolved in components/ui/CategoryIcon.tsx
+};
+
+/**
+ * A brand as a first-class entity — not just a string on `Product`.
+ * Elevated to its own type (Sprint: Catálogo Facetado, domain
+ * consolidation) specifically because Marca needs more than a filter
+ * value: a brand page, a brand banner, a brand description, and its own
+ * SEO — none of which the other facets (técnica, efeito, curvatura...)
+ * need. That's the entire reason Brand gets this treatment and the rest
+ * stay as plain `attributes` — see docs/features/faceted-catalog.md.
+ */
+export type Brand = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string;
+  bannerImage?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+};
+
+/**
+ * Reference back to the record in whatever external system a product
+ * (or variant) was synced from — e.g. `{ source: "tiny", id: "12345" }`.
+ * Deliberately generic (not `tinyId`): the domain doesn't know or care
+ * which source it came from, only that *some* source has an ID for it,
+ * so a future sync can find "this same thing" again instead of
+ * creating a duplicate. See docs/features/tiny-single-product-sync.md.
+ */
+export type ExternalRef = {
+  source: string; // e.g. "tiny", "nuvemshop"
+  id: string;
+};
+
+export type ProductVariant = {
+  id: string;
+  label: string; // e.g. "Volume Russo 0.07 D", "Curvatura C"
+  priceModifier?: number; // added to base price, defaults to 0
+  externalRef?: ExternalRef;
+  /**
+   * When the variation dimension itself IS a facet (most commonly
+   * "Cor" — a product genuinely available in several real colors), the
+   * per-variant value lives here rather than being forced into a single
+   * value on `Product.attributes` (which would misrepresent every color
+   * but one). Facet-aware filtering considers both the product's own
+   * `attributes` and every variant's `attributes` — see
+   * `src/lib/repositories/product-query.ts`.
+   */
+  attributes?: Record<string, string>;
+};
+
+export type Product = {
+  id: string; // maps to Tiny "codigo"/id in a future integration
+  slug: string;
+  name: string;
+  shortDescription: string;
+  description: string;
+  price: number; // current price, in BRL
+  compareAtPrice?: number; // original price, if on promotion
+  stock: number;
+
+  // Identidade/estoque — campos singulares, nunca "navegáveis" (não é o
+  // tipo de coisa que alguém filtra a vitrine por). Mapeiam 1:1 com a
+  // Tiny quando essa integração existir — ver docs/API_TINY.md.
+  sku?: string; // maps to Tiny "codigo" (SKU) explicitly
+  barcode?: string; // Código de barras — maps to Tiny "codigo de barras"
+  manufacturer?: string; // Fabricante — a empresa que produz fisicamente o item, distinto da marca comercial (ver `brandSlug`)
+  weight?: number; // kg — nome de campo na Tiny ainda não confirmado, ver docs/features/tiny-single-product-sync.md
+  dimensions?: { height: number; width: number; length: number }; // cm — idem
+  unit?: string; // unidade de medida/venda — ex.: "UN", "CX", "KG"
+  ncm?: string; // Nomenclatura Comum do Mercosul — classificação fiscal brasileira
+  externalRef?: ExternalRef; // ver definição de ExternalRef acima
+
+  // Categoria Principal — o menu simples e fixo (7 itens,
+  // src/lib/data/categories.ts). Não existe mais Categoria → Subcategoria
+  // no domínio; qualquer hierarquia de uma fonte externa é traduzida
+  // para categorySlug + attributes na camada de importação daquela
+  // fonte, nunca representada aqui.
+  categorySlug: string;
+
+  // Marca — referência para a entidade `Brand` (src/lib/data/brands.ts).
+  // Opcional: nem todo produto tem marca conhecida.
+  brandSlug?: string;
+
+  /**
+   * Facetas de navegação abertas e extensíveis — linha, técnica,
+   * efeito, curvatura, espessura, comprimento, cor, material, volume.
+   * Um produto pertence a quantos grupos fizer sentido simultaneamente,
+   * sem duplicação, porque é só um dicionário chave/valor no mesmo
+   * registro. Nova faceta = uma linha em
+   * `src/lib/facets/registry.ts`, nunca uma mudança aqui. Marca
+   * deliberadamente NÃO mora aqui — ver `Brand`/`brandSlug` acima.
+   */
+  attributes?: Record<string, string>;
+
+  /** Palavras-chave livres — não são "chave:valor" como as facetas
+   * acima, então vivem em uma lista à parte, não dentro de `attributes`. */
+  tags?: string[];
+
+  images: string[]; // placeholder gradient ids for now, real URLs later
+  badge?: "novo" | "mais-vendido" | "promocao";
+  rating?: number; // 0-5
+  reviewCount?: number;
+  variants?: ProductVariant[];
+};
+
+/**
+ * A favorited product. Deliberately product-level only (no `variantId`)
+ * — unlike the cart, favoriting is "I like this item", not "I want this
+ * specific curvature/size right now" — matching how wishlists work in
+ * most e-commerce apps. `addedAt` isn't shown in the UI today, but
+ * enables recency-based sorting/recommendations later without a schema
+ * change — see docs/features/favorites.md.
+ */
+export type FavoriteEntry = {
+  productId: string;
+  addedAt: string; // ISO timestamp
+};
+
+/**
+ * A hero banner slot on the Home screen. Deliberately its own type (not
+ * hardcoded JSX) so a future admin panel (see docs/ADMIN_PANEL.md) can
+ * manage banners as data — today there's a single mock banner in
+ * `src/lib/data/banners.ts`; `HomeHero` already supports rendering more
+ * than one (as a carousel) without any change to this contract.
+ */
+export type HeroBanner = {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  ctaLabel: string;
+  ctaHref: string;
+  theme: "dark" | "light"; // same theme vocabulary as BrandLogo — dark bg+light text, or the reverse
+};
+
+export type CartLine = {
+  productId: string;
+  variantId?: string;
+  quantity: number;
+};
+
+export type CartLineWithProduct = CartLine & {
+  product: Product;
+  variant?: ProductVariant;
+  lineTotal: number;
+};
+
+/**
+ * Aggregate cart snapshot: resolved lines + derived totals. This is the
+ * shape the UI actually consumes (via useCartLines) — CartLine only
+ * holds IDs, Cart is what you get after resolving those IDs against the
+ * catalog and computing totals. See src/services/cart-service.ts.
+ */
+export type Cart = {
+  lines: CartLineWithProduct[];
+  subtotal: number;
+  itemCount: number;
+};
+
+
+========== .\src\lib\repositories\product-query.ts ==========
+import type { Product } from "@/types";
+import { searchTerms, normalizeSearchText } from "@/utils/normalize-text";
+
+/**
+ * Sort orders the UI can request. Deliberately small and named for what
+ * the *shopper* is asking for ("cheapest first"), not for any specific
+ * data source's sort syntax — this is exactly the kind of Tiny-specific
+ * coupling docs/API_TINY.md warns against baking into our contract.
+ */
+export type ProductSortOrder = "relevancia" | "menor-preco" | "maior-preco" | "nome-asc";
+
+const VALID_SORTS: ProductSortOrder[] = ["relevancia", "menor-preco", "maior-preco", "nome-asc"];
+
+export const DEFAULT_PAGE_SIZE = 12;
+export const MAX_PAGE_SIZE = 100;
+
+/**
+ * The one query shape every `ProductRepository` implementation supports.
+ * All fields optional — an empty query just means "everything, page 1".
+ */
+export type ProductQuery = {
+  search?: string;
+  categorySlug?: string;
+  /** Filters by `Product.brandSlug` — a dedicated filter, not part of
+   * `attributes`, because Brand is a first-class entity (see
+   * src/types/index.ts and docs/features/faceted-catalog.md), not a
+   * generic facet string. */
+  brandSlug?: string;
+  sort?: ProductSortOrder;
+  page?: number; // 1-based
+  pageSize?: number;
+  onlyAvailable?: boolean; // stock > 0
+  featuredOnly?: boolean; // has any marketing badge (novo/mais-vendido/promocao)
+  badge?: Product["badge"]; // a *specific* badge — e.g. "mais-vendido" for a Best Sellers section (Sprint 9)
+  /**
+   * Faceted attribute filters — e.g. `{ cor: ["Preto", "Azul"] }`.
+   * Semantics: a product matches a facet key if EITHER its own
+   * `attributes[key]` OR any of its variants' `attributes[key]` is
+   * included in the given array (OR within a facet); a product must
+   * match every facet key present in this object (AND across facets).
+   * See docs/features/faceted-catalog.md.
+   */
+  attributes?: Record<string, string[]>;
+  /** Free-keyword filter over `Product.tags` — a product matches if it
+   * has at least one of the given tags. */
+  tags?: string[];
+  priceMin?: number;
+  priceMax?: number;
+};
+
+export type ProductQueryResult = {
+  items: Product[];
+  total: number; // total matches across all pages, not just this page's length
+  page: number; // the page actually served (after fallback normalization)
+  pageSize: number; // the page size actually served (after fallback normalization)
+  hasMore: boolean;
+};
+
+/**
+ * Normalizes a raw (possibly attacker- or typo-supplied, e.g. from a URL
+ * query string) `ProductQuery` into safe values — see requirement in
+ * docs/features/product.md and Sprint 6 task 11. Never throws; always
+ * returns something usable.
+ */
+export function normalizeProductQuery(raw: ProductQuery): Required<
+  Pick<ProductQuery, "sort" | "page" | "pageSize">
+> &
+  ProductQuery {
+  const sort = raw.sort && VALID_SORTS.includes(raw.sort) ? raw.sort : "relevancia";
+
+  const rawPage = raw.page;
+  const page = Number.isFinite(rawPage) && (rawPage as number) >= 1 ? Math.floor(rawPage as number) : 1;
+
+  const rawPageSize = raw.pageSize;
+  let pageSize =
+    Number.isFinite(rawPageSize) && (rawPageSize as number) > 0
+      ? Math.floor(rawPageSize as number)
+      : DEFAULT_PAGE_SIZE;
+  if (pageSize > MAX_PAGE_SIZE) pageSize = MAX_PAGE_SIZE;
+
+  return { ...raw, sort, page, pageSize };
+}
+
+/**
+ * The actual query engine: filter → search-score → sort → paginate.
+ * Pure function over an in-memory `Product[]` — both
+ * `MockProductRepository` and `TinyProductRepository` call this over
+ * their respective full catalogs (mock: the static array; Tiny: the
+ * already-fetched/cached mapped catalog — see docs/API_TINY.md §11 on
+ * why Tiny can't push this filtering down to its own API). This is the
+ * single place search/sort/pagination logic lives — never duplicated
+ * per repository, per page, or between client and server.
+ */
+export function applyProductQuery(products: Product[], rawQuery: ProductQuery): ProductQueryResult {
+  const query = normalizeProductQuery(rawQuery);
+  let results = products;
+
+  if (query.categorySlug) {
+    results = results.filter((p) => p.categorySlug === query.categorySlug);
+  }
+  if (query.brandSlug) {
+    results = results.filter((p) => p.brandSlug === query.brandSlug);
+  }
+  if (query.onlyAvailable) {
+    results = results.filter((p) => p.stock > 0);
+  }
+  if (query.featuredOnly) {
+    results = results.filter((p) => Boolean(p.badge));
+  }
+  if (query.badge) {
+    results = results.filter((p) => p.badge === query.badge);
+  }
+  if (query.attributes) {
+    for (const [key, values] of Object.entries(query.attributes)) {
+      if (!values || values.length === 0) continue;
+      results = results.filter((p) => productHasAttributeValue(p, key, values));
+    }
+  }
+  if (query.tags && query.tags.length > 0) {
+    results = results.filter((p) => p.tags?.some((t) => query.tags!.includes(t)));
+  }
+  if (query.priceMin !== undefined) {
+    results = results.filter((p) => p.price >= query.priceMin!);
+  }
+  if (query.priceMax !== undefined) {
+    results = results.filter((p) => p.price <= query.priceMax!);
+  }
+
+  const terms = query.search ? searchTerms(query.search) : [];
+  let scoreById: Map<string, number> | null = null;
+
+  if (terms.length > 0) {
+    scoreById = new Map();
+    results = results.filter((product) => {
+      const score = scoreMatch(product, terms);
+      if (score > 0) scoreById!.set(product.id, score);
+      return score > 0;
+    });
+  }
+
+  results = sortResults(results, query.sort, scoreById);
+
+  const total = results.length;
+  const start = (query.page - 1) * query.pageSize;
+  const items = results.slice(start, start + query.pageSize);
+  const hasMore = start + items.length < total;
+
+  return { items, total, page: query.page, pageSize: query.pageSize, hasMore };
+}
+
+/**
+ * True if the product matches a facet value either at the product
+ * level (`product.attributes[key]`) or on any of its variants
+ * (`variant.attributes[key]`) — a product with real color variants
+ * stores color per-variant (see `ProductVariant.attributes` in
+ * src/types/index.ts), so a filter that only checked the product level
+ * would silently never match those products.
+ */
+function productHasAttributeValue(product: Product, key: string, values: string[]): boolean {
+  const productValue = product.attributes?.[key];
+  if (productValue && values.includes(productValue)) return true;
+
+  return (product.variants ?? []).some((v) => {
+    const variantValue = v.attributes?.[key];
+    return variantValue && values.includes(variantValue);
+  });
+}
+
+/**
+ * Every search word must match somewhere in the product (AND semantics)
+ * — this is what makes "cilios marrom" find "Cílios Marrom Fio a Fio"
+ * regardless of accent/case, while not matching a product that only has
+ * "cilios" and nothing resembling "marrom" anywhere. Matches in the name
+ * score highest (and a match at the very start of the name scores
+ * highest of all), then short description, category, facet attribute
+ * values (marca, técnica, efeito, ...), SKU, then the long description —
+ * this ordering is what "relevância" sorts by.
+ */
+function scoreMatch(product: Product, terms: string[]): number {
+  const name = normalizeSearchText(product.name);
+  const shortDescription = normalizeSearchText(product.shortDescription);
+  const description = normalizeSearchText(product.description);
+  const category = normalizeSearchText(product.categorySlug);
+  const sku = product.sku ? normalizeSearchText(product.sku) : "";
+  const attributeValues = normalizeSearchText(
+    [
+      ...(product.attributes ? Object.values(product.attributes) : []),
+      ...(product.variants ?? []).flatMap((v) => (v.attributes ? Object.values(v.attributes) : [])),
+    ].join(" ")
+  );
+
+  let score = 0;
+
+  for (const term of terms) {
+    let termMatched = false;
+
+    if (name.includes(term)) {
+      score += name.indexOf(term) === 0 ? 40 : 25;
+      termMatched = true;
+    }
+    if (shortDescription.includes(term)) {
+      score += 12;
+      termMatched = true;
+    }
+    if (category.includes(term)) {
+      score += 8;
+      termMatched = true;
+    }
+    if (attributeValues.includes(term)) {
+      score += 8;
+      termMatched = true;
+    }
+    if (sku.includes(term)) {
+      score += 6;
+      termMatched = true;
+    }
+    if (description.includes(term)) {
+      score += 4;
+      termMatched = true;
+    }
+
+    if (!termMatched) return 0; // every word must match somewhere
+  }
+
+  return score;
+}
+
+function sortResults(
+  products: Product[],
+  sort: ProductSortOrder,
+  scoreById: Map<string, number> | null
+): Product[] {
+  switch (sort) {
+    case "menor-preco":
+      return [...products].sort((a, b) => a.price - b.price);
+    case "maior-preco":
+      return [...products].sort((a, b) => b.price - a.price);
+    case "nome-asc":
+      return [...products].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+    case "relevancia":
+    default:
+      if (scoreById) {
+        return [...products].sort((a, b) => (scoreById.get(b.id) ?? 0) - (scoreById.get(a.id) ?? 0));
+      }
+      return products; // no search term: natural catalog order
+  }
+}
+
+
+========== .\src\lib\repositories\tiny\tiny-product-repository.ts ==========
+import "server-only";
+import type { ProductRepository } from "@/lib/repositories/contracts";
+import { MockProductRepository } from "@/lib/repositories/mock/mock-product-repository";
+import { tinyClient, TinyApiError } from "@/lib/repositories/tiny/tiny-client";
+import { mapTinyProduct, type TinyProductPayload } from "@/lib/repositories/tiny/tiny-mapper";
+import { tinyCache } from "@/lib/repositories/tiny/cache";
+import { recordTinySuccess, recordTinyFallback } from "@/lib/repositories/tiny/status";
+import { logConnectionStart, logRecordCount, logFallback } from "@/lib/repositories/tiny/logger";
+import { applyProductQuery, MAX_PAGE_SIZE, type ProductQuery, type ProductQueryResult } from "@/lib/repositories/product-query";
+import type { Product } from "@/types";
+
+const CATALOG_CACHE_KEY = "tiny:products:all";
+const CATALOG_CACHE_TTL_MS = 60_000; // matches the client's React Query staleTime
+const LIST_PAGE_SIZE = 100; // Tiny's documented default/limit for GET /produtos
+
+type TinyProductListItem = { id: number };
+type TinyProductListResponse = {
+  itens: TinyProductListItem[];
+  paginacao: { limit: number; offset: number; total: number };
+};
+
+/**
+ * Implements `ProductRepository` against the real Tiny ERP API v3.
+ *
+ * Important shape of the sync (see docs/API_TINY.md §4 and §11):
+ * `GET /produtos` (list) does NOT include categoria/anexos/variações/SEO
+ * — only `GET /produtos/{id}` (detail) does. So building our `Product[]`
+ * means: page through the list to collect IDs, then fetch each product's
+ * detail individually. This is an N+1 pattern and is the single biggest
+ * scaling risk of this integration — documented, not hidden, in
+ * docs/API_TINY.md §11. The in-memory cache below exists specifically to
+ * keep this expensive fetch from re-running on every request.
+ *
+ * On ANY failure (auth, timeout, HTTP error, network), every method
+ * falls back to `MockProductRepository` rather than showing a broken
+ * page — see docs/API_TINY.md §9 "fallback controlado".
+ */
+export class TinyProductRepository implements ProductRepository {
+  private readonly fallback = new MockProductRepository();
+
+  private async fetchAllFromTiny(): Promise<Product[]> {
+    const cached = tinyCache.get<Product[]>(CATALOG_CACHE_KEY);
+    if (cached) return cached;
+
+    logConnectionStart("catálogo de produtos");
+
+    // Phase 1: page through the lightweight list to collect active IDs.
+    const ids: number[] = [];
+    let offset = 0;
+    let total = Infinity;
+
+    while (offset < total) {
+      const page = await tinyClient.get<TinyProductListResponse>("/produtos", {
+        limit: LIST_PAGE_SIZE,
+        offset,
+        situacao: "A", // only active products — documented Tiny query param
+      });
+      total = page.paginacao?.total ?? page.itens.length;
+      ids.push(...page.itens.map((item) => item.id));
+      offset += LIST_PAGE_SIZE;
+    }
+
+    // Phase 2: fetch full detail per product (sequential — see class doc
+    // comment on rate-limit risk; parallelizing this would need its own
+    // throttling against the account's X-RateLimit-* headers).
+    const products: Product[] = [];
+    for (const id of ids) {
+      const detail = await tinyClient.get<TinyProductPayload>(`/produtos/${id}`);
+      const mapped = mapTinyProduct(detail);
+      if (mapped) products.push(mapped);
+    }
+
+    logRecordCount("catálogo de produtos", products.length);
+    tinyCache.set(CATALOG_CACHE_KEY, products, CATALOG_CACHE_TTL_MS);
+    recordTinySuccess();
+    return products;
+  }
+
+  async query(params: ProductQuery): Promise<ProductQueryResult> {
+    try {
+      const all = await this.fetchAllFromTiny();
+      return applyProductQuery(all, params);
+    } catch (err) {
+      this.recordFallback("query", err);
+      return this.fallback.query(params);
+    }
+  }
+
+  async findAll(): Promise<Product[]> {
+    return (await this.query({ pageSize: MAX_PAGE_SIZE })).items;
+  }
+
+  async findBySlug(slug: string): Promise<Product | undefined> {
+    try {
+      const all = await this.fetchAllFromTiny();
+      return all.find((p) => p.slug === slug);
+    } catch (err) {
+      this.recordFallback("findBySlug", err);
+      return this.fallback.findBySlug(slug);
+    }
+  }
+
+  async findByCategory(categorySlug: string): Promise<Product[]> {
+    return (await this.query({ categorySlug, pageSize: MAX_PAGE_SIZE })).items;
+  }
+
+  async search(query: string): Promise<Product[]> {
+    return (await this.query({ search: query, pageSize: MAX_PAGE_SIZE })).items;
+  }
+
+  /** Logs enough to debug (which op, what kind of failure) without ever
+   * touching request/response bodies, headers, or credentials. */
+  private recordFallback(operation: string, err: unknown): void {
+    const reason =
+      err instanceof TinyApiError
+        ? `${err.kind}${err.status ? ` (HTTP ${err.status})` : ""}`
+        : "erro desconhecido";
+    logFallback(operation, reason);
+    recordTinyFallback(err instanceof TinyApiError ? err.kind : "unknown");
+  }
+}
+
+
+========== .\src\lib\repositories\tiny\tiny-v2-mapper.ts ==========
+/**
+ * Formato bruto do produto retornado por `produto.obter.php` da API v2
+ * da Tiny — diferente do formato v3 (`tiny-mapper.ts`): campos no nível
+ * raiz em vez de aninhados, nomes de campo diferentes, e uma modelagem
+ * de variação distinta (produtos "filhos" ligados por
+ * `produto_pai_id`).
+ *
+ * **Nível de confiança por campo**: os nomes abaixo seguem o padrão
+ * público e estável da API v2 da Tiny — mas nunca foram confirmados
+ * nesta conversa contra um payload real. A página de validação
+ * (`/dev/tiny-v2-product-mapping`) existe exatamente para essa
+ * confirmação.
+ */
+import { extractUsableImageUrls } from "@/lib/repositories/tiny/tiny-v2-image-scanner";
+import { sanitizeHtmlForDisplay } from "@/utils/sanitize-html-for-display";
+
+export type TinyV2ProductPayload = {
+  id: number | string;
+  nome?: string;
+  codigo?: string;
+  unidade?: string;
+  preco?: number | string | { preco?: number | string; venda?: number | string; valor?: number | string };
+  preco_promocional?: number | string | { preco?: number | string; valor?: number | string };
+  estoque?:
+    | number
+    | string
+    | { saldo?: number | string; quantidade?: number | string; atual?: number | string; disponivel?: number | string }
+    | { deposito?: unknown; saldo?: number | string; quantidade?: number | string }[];
+  deposito?: unknown;
+  depositos?: { saldo?: number | string; quantidade?: number | string; atual?: number | string }[];
+  ncm?: string;
+  gtin?: string;
+  ean?: string;
+  situacao?: string;
+  categoria?: string;
+  marca?: string;
+  descricao?: string;
+  descricao_complementar?: string;
+  peso_bruto?: number | string;
+  peso_liquido?: number | string;
+  altura_embalagem?: number | string;
+  largura_embalagem?: number | string;
+  comprimento_embalagem?: number | string;
+  anexos?: ({ url?: string; anexo?: { url?: string }; [key: string]: unknown } | string)[];
+  variacoes?: { variacao?: { id?: number | string; nome?: string; grade_valor?: string } }[];
+  [key: string]: unknown;
+};
+
+export type FieldStatusValue = "mapped" | "missing" | "incompatible";
+
+/** Status de exatamente um dos 17 campos de negócio pedidos — a
+ * estrutura única que a página de validação renderiza como tabela. */
+export type FieldStatus = {
+  key: string;
+  label: string;
+  status: FieldStatusValue;
+  value?: unknown;
+  rawValue?: unknown;
+  note?: string;
+};
+
+export type TinyV2MappingResult = {
+  mapped: Record<string, unknown>;
+  fieldStatuses: FieldStatus[];
+  imagesNote: string;
+  stockNote: string;
+  variantsNote: string;
+};
+
+function toNumber(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const n = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
+/**
+ * `preco`/`preco_promocional` podem vir como número/string direto
+ * (formato plano, o que assumíamos originalmente) OU como um objeto
+ * aninhado — confirmado como um problema real: contas onde o valor
+ * veio aninhado resultavam em "preco não retornado" e o produto caía
+ * para R$ 0,00. A API v3 (já confirmada neste projeto) aninha
+ * `estoque.quantidade`, então o mesmo padrão é uma hipótese razoável
+ * para a v2 — tentamos as duas formas, nunca inventamos um valor.
+ */
+function extractPrice(value: TinyV2ProductPayload["preco"]): number | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value === "object") return toNumber(value.preco ?? value.venda ?? value.valor);
+  return toNumber(value);
+}
+
+function extractStock(value: TinyV2ProductPayload["estoque"]): number | null {
+  if (value === null || value === undefined) return null;
+  if (Array.isArray(value)) {
+    // Estoque por depósito — soma o saldo de todos, já que o valor
+    // consolidado é o que importa para "tem ou não tem estoque".
+    const total = value.reduce((sum, item) => {
+      const n = toNumber(item.saldo ?? item.quantidade);
+      return sum + (n ?? 0);
+    }, 0);
+    return value.length > 0 ? total : null;
+  }
+  if (typeof value === "object") {
+    return toNumber(value.saldo ?? value.quantidade ?? value.atual ?? value.disponivel);
+  }
+  return toNumber(value);
+}
+
+/** Fallback quando `estoque` não rendeu nada, mas o payload tem um
+ * campo `depositos` separado no nível raiz — mesma lógica de soma. */
+function extractStockFromDeposits(depositos: TinyV2ProductPayload["depositos"]): number | null {
+  if (!Array.isArray(depositos) || depositos.length === 0) return null;
+  const total = depositos.reduce((sum, item) => {
+    const n = toNumber(item.saldo ?? item.quantidade ?? item.atual);
+    return sum + (n ?? 0);
+  }, 0);
+  return total;
+}
+
+const KNOWN_CATEGORY_SLUGS = ["cilios", "colas", "pincas", "removedores", "higienizacao", "acessorios", "kits"];
+
+function slugifyBasic(input: string): string {
+  return input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+/**
+ * Mapeia o payload bruto da Tiny v2 para o modelo `Product` — nunca faz
+ * chamada HTTP, nunca decide sozinho gravar nada no catálogo. Devolve
+ * o status de cada um dos 17 campos de negócio pedidos, sempre nesta
+ * mesma ordem, para a página renderizar como tabela.
+ */
+export function mapTinyV2ProductToDomain(raw: TinyV2ProductPayload): TinyV2MappingResult {
+  const mapped: Record<string, unknown> = {};
+  const fieldStatuses: FieldStatus[] = [];
+
+  function mappedStatus(key: string, label: string, value: unknown) {
+    mapped[key] = value;
+    fieldStatuses.push({ key, label, status: "mapped", value });
+  }
+  function missingStatus(key: string, label: string, note: string) {
+    fieldStatuses.push({ key, label, status: "missing", note });
+  }
+  function incompatibleStatus(key: string, label: string, rawValue: unknown, note: string) {
+    fieldStatuses.push({ key, label, status: "incompatible", rawValue, note });
+  }
+
+  const externalRef = { source: "tiny", id: String(raw.id) };
+  mappedStatus("externalRef", "ID externo do Tiny", externalRef);
+
+  if (raw.nome?.trim()) mappedStatus("name", "Nome", raw.nome.trim());
+  else missingStatus("name", "Nome", 'Campo "nome" não veio preenchido na Tiny');
+
+  const rawDescription = (raw.descricao_complementar || raw.descricao)?.trim();
+  const description = rawDescription ? sanitizeHtmlForDisplay(rawDescription) : undefined;
+  if (description) mappedStatus("description", "Descrição", description);
+  else missingStatus("description", "Descrição", 'Nem "descricao" nem "descricao_complementar" vieram preenchidos');
+
+  if (raw.codigo?.trim()) mappedStatus("sku", "SKU/código", raw.codigo.trim());
+  else missingStatus("sku", "SKU/código", 'Campo "codigo" não veio preenchido na Tiny');
+
+  const gtinValue = raw.gtin?.trim() || raw.ean?.trim();
+  if (gtinValue) mappedStatus("barcode", "GTIN/EAN", gtinValue);
+  else missingStatus("barcode", "GTIN/EAN", 'Nem "gtin" nem "ean" vieram preenchidos');
+
+  const price = extractPrice(raw.preco);
+  const promoPrice = extractPrice(raw.preco_promocional);
+  const hasRealPromo = promoPrice !== null && price !== null && promoPrice < price;
+  const effectivePrice = hasRealPromo ? promoPrice : price;
+  if (effectivePrice !== null) mappedStatus("price", "Preço", effectivePrice);
+  else missingStatus("price", "Preço", 'Campo "preco" não veio preenchido, nem como número direto nem como objeto aninhado ({preco, venda ou valor})');
+
+  if (hasRealPromo) mappedStatus("compareAtPrice", "Preço promocional", price);
+  else
+    missingStatus(
+      "compareAtPrice",
+      "Preço promocional",
+      "Sem promoção ativa para este produto (esperado quando não há preço promocional)"
+    );
+
+  const stock = extractStock(raw.estoque) ?? extractStockFromDeposits(raw.depositos);
+  if (stock !== null) mappedStatus("stock", "Estoque", stock);
+  else missingStatus("stock", "Estoque", 'Campo "estoque" não veio preenchido, nem como número direto nem como objeto aninhado ({saldo, quantidade, atual ou disponivel})');
+
+  if (raw.unidade?.trim()) mappedStatus("unit", "Unidade", raw.unidade.trim());
+  else missingStatus("unit", "Unidade", 'Campo "unidade" não veio preenchido');
+
+  if (raw.categoria?.trim()) {
+    const slug = slugifyBasic(raw.categoria);
+    if (KNOWN_CATEGORY_SLUGS.includes(slug)) {
+      mappedStatus("categorySlug", "Categoria", slug);
+    } else {
+      mapped.categorySlug = slug;
+      incompatibleStatus(
+        "categorySlug",
+        "Categoria",
+        raw.categoria,
+        `Categoria "${raw.categoria}" (slug: "${slug}") não corresponde a nenhuma das 7 categorias principais (${KNOWN_CATEGORY_SLUGS.join(", ")}) — precisaria de mapeamento manual, igual foi feito para a Nuvemshop`
+      );
+    }
+  } else {
+    missingStatus("categorySlug", "Categoria", 'Campo "categoria" não veio preenchido');
+  }
+
+  if (raw.marca?.trim()) mappedStatus("brandSlug", "Marca", slugifyBasic(raw.marca));
+  else missingStatus("brandSlug", "Marca", 'Campo "marca" não veio preenchido');
+
+  let imagesNote: string;
+  const scannedUrls = extractUsableImageUrls(raw);
+
+  if (Array.isArray(raw.anexos) && raw.anexos.length > 0) {
+    const flatUrls = raw.anexos
+      .map((a) => (typeof a === "string" ? a : a.url))
+      .filter((u): u is string => Boolean(u));
+    const nestedUrls = raw.anexos
+      .map((a) => (typeof a === "object" && a.anexo ? a.anexo.url : undefined))
+      .filter((u): u is string => Boolean(u));
+    const directUrls = flatUrls.length > 0 ? flatUrls : nestedUrls;
+
+    if (directUrls.length > 0) {
+      mappedStatus("images", "Imagens", directUrls);
+      imagesNote = `${directUrls.length} imagem(ns) com URL direta encontrada(s) em "anexos" — nenhuma chamada complementar necessária.`;
+    } else if (scannedUrls.length > 0) {
+      mapped.images = scannedUrls;
+      incompatibleStatus(
+        "images",
+        "Imagens",
+        raw.anexos,
+        'O caminho esperado ("anexos[].url") não tinha URL, mas uma varredura completa do payload encontrou imagem(ns) em outro formato — ver docs/features/tiny-v2-image-resolution.md.'
+      );
+      imagesNote = `"anexos" não tinha URL direta, mas a varredura completa do payload encontrou ${scannedUrls.length} imagem(ns) em outro lugar do JSON — usadas como fallback. Vale confirmar se esse é mesmo o campo certo.`;
+    } else {
+      mapped.images = [];
+      incompatibleStatus("images", "Imagens", raw.anexos, 'A Tiny retornou item(ns) em "anexos", mas sem URL utilizável (só IDs) — precisa de chamada complementar.');
+      imagesNote = `A Tiny retornou ${raw.anexos.length} item(ns) em "anexos", mas só com ID, sem URL — é necessária a chamada complementar GET /produtos/{id}/anexos (endpoint confirmado na API v3, ver docs/API_TINY.md) para obter a URL real.`;
+    }
+  } else if (scannedUrls.length > 0) {
+    mapped.images = scannedUrls;
+    incompatibleStatus(
+      "images",
+      "Imagens",
+      undefined,
+      'Não havia nenhum campo "anexos", mas uma varredura completa do payload encontrou imagem(ns) em outro lugar do JSON.'
+    );
+    imagesNote = `Não havia "anexos", mas a varredura completa do payload encontrou ${scannedUrls.length} imagem(ns) em outro formato — usadas como fallback.`;
+  } else {
+    mapped.images = [];
+    missingStatus("images", "Imagens", 'Nenhum item em "anexos" neste payload, e a varredura completa não encontrou nenhuma imagem em nenhum lugar');
+    imagesNote =
+      'A Tiny não retornou nenhuma imagem para este produto, em nenhum formato conhecido — pode ser porque o produto realmente não tem imagem, ou porque é necessária a chamada complementar GET /produtos/{id}/anexos (API v3, ver docs/API_TINY.md).';
+  }
+
+  const stockNote =
+    raw.depositos !== undefined || raw.deposito !== undefined
+      ? 'O payload traz informação de depósito(s) — o estoque foi somado entre todos os depósitos encontrados (em "estoque" e/ou "depositos"). Se o valor consolidado ainda parecer errado, considerar uma chamada complementar a um endpoint de estoque dedicado (ex.: produto.obter.estoque.php).'
+      : 'Nenhum sinal de múltiplos depósitos neste payload — o campo "estoque" provavelmente é confiável como está.';
+
+  const weight = toNumber(raw.peso_bruto) ?? toNumber(raw.peso_liquido);
+  if (weight !== null) mappedStatus("weight", "Peso", weight);
+  else missingStatus("weight", "Peso", 'Nem "peso_bruto" nem "peso_liquido" vieram preenchidos');
+
+  const height = toNumber(raw.altura_embalagem);
+  const width = toNumber(raw.largura_embalagem);
+  const length = toNumber(raw.comprimento_embalagem);
+  if (height !== null && width !== null && length !== null) {
+    mappedStatus("dimensions", "Dimensões", { height, width, length });
+  } else if (
+    raw.altura_embalagem !== undefined ||
+    raw.largura_embalagem !== undefined ||
+    raw.comprimento_embalagem !== undefined
+  ) {
+    incompatibleStatus(
+      "dimensions",
+      "Dimensões",
+      { altura: raw.altura_embalagem, largura: raw.largura_embalagem, comprimento: raw.comprimento_embalagem },
+      "Nem todas as três dimensões vieram preenchidas"
+    );
+  } else {
+    missingStatus("dimensions", "Dimensões", "Nenhum campo de dimensão veio preenchido");
+  }
+
+  if (raw.ncm?.trim()) mappedStatus("ncm", "NCM", raw.ncm.trim());
+  else missingStatus("ncm", "NCM", 'Campo "ncm" não veio preenchido');
+
+  if (raw.situacao) {
+    if (raw.situacao === "A") {
+      mappedStatus("situacao", "Status", raw.situacao);
+    } else {
+      mapped.situacao = raw.situacao;
+      incompatibleStatus(
+        "situacao",
+        "Status",
+        raw.situacao,
+        'Produto não está com situação "A" (ativo) — não deveria ser importado para o catálogo publicado'
+      );
+    }
+  } else {
+    missingStatus("situacao", "Status", 'Campo "situacao" não veio preenchido');
+  }
+
+  let variantsNote: string;
+  if (Array.isArray(raw.variacoes) && raw.variacoes.length > 0) {
+    const variants = raw.variacoes.map((v) => ({
+      id: String(v.variacao?.id ?? ""),
+      label: v.variacao?.nome || v.variacao?.grade_valor || "Variação",
+      externalRef: { source: "tiny", id: String(v.variacao?.id ?? "") },
+    }));
+    const hasUsableLabels = variants.every((v) => v.label !== "Variação");
+    if (hasUsableLabels) {
+      mappedStatus("variants", "Variações", variants);
+      variantsNote = `${variants.length} variação(ões) com nome/valor de grade preenchido — id da Tiny preservado em cada uma.`;
+    } else {
+      mapped.variants = variants;
+      incompatibleStatus("variants", "Variações", raw.variacoes, "Variação sem nome/grade legível");
+      variantsNote = `${variants.length} variação(ões) encontrada(s), mas sem nome/valor de grade em pelo menos uma — a API v2 costuma tratar cada variação como um "produto filho" separado (ligado por produto_pai_id); provavelmente é necessária uma chamada complementar por ID de variação para obter o nome completo.`;
+    }
+  } else {
+    missingStatus("variants", "Variações", 'Nenhum item em "variacoes" neste payload');
+    variantsNote =
+      'Este payload não trouxe nenhum item em "variacoes" — ou o produto realmente não tem variação, ou (mais provável) as variações são "produtos filhos" separados, exigindo uma consulta adicional por produto_pai_id para localizá-las.';
+  }
+
+  return { mapped, fieldStatuses, imagesNote, stockNote, variantsNote };
+}
+
+
+========== .\src\lib\repositories\tiny\tiny-v2-product-builder.ts ==========
+import { slugify } from "@/utils/slugify";
+import type { Product } from "@/types";
+import type { TinyV2MappingResult } from "@/lib/repositories/tiny/tiny-v2-mapper";
+
+export type BuildResult = {
+  product: Product;
+  fallbacksUsed: string[];
+  blockers: string[];
+};
+
+/**
+ * `mapTinyV2ProductToDomain` deliberately only reports *status* per
+ * field — it never invents a `slug`/`shortDescription` (concepts the
+ * Tiny v2 payload has no direct field for at all) and never decides
+ * what to do when a required domain field is missing. This function is
+ * that decision, made once, explicitly, and reported honestly via
+ * `fallbacksUsed` — never silent.
+ */
+export function buildWritableProduct(result: TinyV2MappingResult, tinyProductId: string): BuildResult {
+  const fallbacksUsed: string[] = [];
+  const blockers: string[] = [];
+  const m = result.mapped;
+
+  const name = typeof m.name === "string" ? m.name : undefined;
+  if (!name) blockers.push("Nome ausente — não é possível gerar um produto sem nome.");
+
+  const price = typeof m.price === "number" ? m.price : undefined;
+  if (price === undefined) blockers.push("Preço ausente — não é possível gravar um produto sem preço.");
+
+  if (blockers.length > 0) {
+    return {
+      product: {
+        id: "",
+        slug: "",
+        name: name ?? "",
+        shortDescription: "",
+        description: "",
+        price: price ?? 0,
+        stock: 0,
+        categorySlug: "",
+        images: [],
+      },
+      fallbacksUsed,
+      blockers,
+    };
+  }
+
+  const slug = slugify(name!) || `tiny-produto-${tinyProductId}`;
+  const finalPrice: number = price!;
+
+  const description = typeof m.description === "string" ? m.description : name!;
+  if (typeof m.description !== "string") {
+    fallbacksUsed.push("shortDescription/description: Tiny não retornou descrição — usando o nome como texto.");
+  }
+  // shortDescription é sempre renderizada como texto puro (ver
+  // ProductDetail.tsx), nunca via dangerouslySetInnerHTML — por isso
+  // é derivada do texto SEM tags, nunca truncando o HTML já
+  // sanitizado por contagem de caracteres (que poderia cortar uma tag
+  // no meio e produzir HTML quebrado).
+  const plainTextDescription = description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  const shortDescription =
+    plainTextDescription.length > 80 ? `${plainTextDescription.slice(0, 77)}...` : plainTextDescription;
+
+  let categorySlug = typeof m.categorySlug === "string" ? m.categorySlug : undefined;
+  if (!categorySlug) {
+    categorySlug = "geral";
+    fallbacksUsed.push('categorySlug: Tiny não retornou categoria — usando "geral" como fallback temporário.');
+  }
+
+  const stock = typeof m.stock === "number" ? m.stock : 0;
+  if (typeof m.stock !== "number") {
+    fallbacksUsed.push("stock: Tiny não retornou estoque — usando 0 (produto aparecerá como esgotado até confirmar).");
+  }
+
+  const product: Product = {
+    id: "",
+    slug,
+    name: name!,
+    shortDescription,
+    description,
+    price: finalPrice,
+    compareAtPrice: typeof m.compareAtPrice === "number" ? m.compareAtPrice : undefined,
+    stock,
+    categorySlug,
+    brandSlug: typeof m.brandSlug === "string" ? m.brandSlug : undefined,
+    sku: typeof m.sku === "string" ? m.sku : undefined,
+    barcode: typeof m.barcode === "string" ? m.barcode : undefined,
+    unit: typeof m.unit === "string" ? m.unit : undefined,
+    ncm: typeof m.ncm === "string" ? m.ncm : undefined,
+    weight: typeof m.weight === "number" ? m.weight : undefined,
+    dimensions:
+      m.dimensions && typeof m.dimensions === "object" ? (m.dimensions as Product["dimensions"]) : undefined,
+    images: Array.isArray(m.images) ? (m.images as string[]) : [],
+    variants: Array.isArray(m.variants) ? (m.variants as Product["variants"]) : undefined,
+    externalRef: m.externalRef as Product["externalRef"],
+  };
+
+  return { product, fallbacksUsed, blockers };
+}
+
+
+========== .\src\lib\repositories\tiny\tiny-v2-image-resolution.ts ==========
+import "server-only";
+import { validateTinyEnv } from "@/lib/env";
+import { tinyIntegrationService } from "@/lib/repositories/tiny/tiny-integration-service";
+import { validateImageUrls, type ImageUrlValidation } from "@/lib/repositories/tiny/tiny-v2-image-validator";
+import type { TinyV2MappingResult } from "@/lib/repositories/tiny/tiny-v2-mapper";
+
+export type ImageResolutionResult = {
+  source: "v2-direto" | "v2-varredura" | "v3-complementar" | "nenhuma-fonte";
+  urls: string[];
+  validations: ImageUrlValidation[];
+  note: string;
+};
+
+/**
+ * Resolve as imagens de um produto usando, em ordem: (1) o que o
+ * mapeamento v2 já encontrou (diretamente ou via varredura ampla do
+ * payload); (2) se nada foi encontrado, tenta a chamada complementar
+ * real e confirmada `GET /produtos/{id}/anexos` (API v3 — só funciona
+ * se as credenciais v3 também estiverem configuradas). Sempre valida a
+ * acessibilidade real (sem login) de cada URL encontrada.
+ */
+export async function resolveProductImages(
+  tinyProductId: string,
+  mapping: TinyV2MappingResult
+): Promise<ImageResolutionResult> {
+  const directUrls = Array.isArray(mapping.mapped.images) ? (mapping.mapped.images as string[]) : [];
+
+  if (directUrls.length > 0) {
+    const validations = await validateImageUrls(directUrls);
+    const source =
+      mapping.fieldStatuses.find((f) => f.key === "images")?.status === "incompatible"
+        ? "v2-varredura"
+        : "v2-direto";
+    return {
+      source,
+      urls: directUrls,
+      validations,
+      note:
+        source === "v2-direto"
+          ? "Imagens encontradas diretamente no payload v2, no campo esperado."
+          : "Imagens encontradas por varredura ampla do payload v2 (não no campo esperado) — vale confirmar a estrutura real.",
+    };
+  }
+
+  const v3CredsValid = validateTinyEnv().ok;
+  if (!v3CredsValid) {
+    return {
+      source: "nenhuma-fonte",
+      urls: [],
+      validations: [],
+      note:
+        "Nenhuma imagem encontrada no payload v2, e as credenciais v3 (TINY_CLIENT_ID/TINY_CLIENT_SECRET/TINY_REFRESH_TOKEN) não estão configuradas para tentar a chamada complementar GET /produtos/{id}/anexos. Configure-as para tentar essa via, ou confirme manualmente que o produto realmente não tem foto na Tiny.",
+    };
+  }
+
+  try {
+    const attachments = await tinyIntegrationService.getProductAttachments(tinyProductId);
+    const urls = attachments.map((a) => a.url);
+    if (urls.length === 0) {
+      return {
+        source: "nenhuma-fonte",
+        urls: [],
+        validations: [],
+        note: "A chamada complementar GET /produtos/{id}/anexos (v3) também não retornou nenhuma imagem — o produto provavelmente realmente não tem foto cadastrada na Tiny.",
+      };
+    }
+    const validations = await validateImageUrls(urls);
+    return {
+      source: "v3-complementar",
+      urls,
+      validations,
+      note: `${urls.length} imagem(ns) obtida(s) via chamada complementar GET /produtos/${tinyProductId}/anexos (API v3).`,
+    };
+  } catch (err) {
+    return {
+      source: "nenhuma-fonte",
+      urls: [],
+      validations: [],
+      note: `Tentativa de chamada complementar v3 falhou: ${err instanceof Error ? err.message : "erro desconhecido"}.`,
+    };
+  }
+}
+
+
+========== .\src\lib\db\prisma.ts ==========
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "../../../generated/prisma/client";
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error("DATABASE_URL não configurada");
+}
+
+const adapter = new PrismaPg({
+  connectionString,
+});
+
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+
+
+========== .\prisma\schema.prisma ==========
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  tinyId          String   @unique
+  sku             String?  @unique
+  name            String
+  slug            String   @unique
+  description     String?
+  shortDescription String?
+
+  price           Decimal  @db.Decimal(10, 2)
+  compareAtPrice  Decimal? @db.Decimal(10, 2)
+
+  stock           Int      @default(0)
+  active          Boolean  @default(true)
+
+  brandId         String?
+  categoryId      String?
+
+  brand           Brand?    @relation(fields: [brandId], references: [id])
+  category        Category? @relation(fields: [categoryId], references: [id])
+
+  images          ProductImage[]
+  variants        ProductVariant[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([tinyId])
+  @@index([sku])
+  @@index([slug])
+  @@index([name])
+  @@index([categoryId])
+  @@index([brandId])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  alt       String?
+  position  Int      @default(0)
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id        String   @id @default(cuid())
+  productId String
+
+  tinyId    String?  @unique
+  sku       String?  @unique
+  name      String?
+
+  price     Decimal? @db.Decimal(10, 2)
+  stock     Int      @default(0)
+  active    Boolean  @default(true)
+
+  attributes Json?
+
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+
+  products  Product[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Brand {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+
+  products  Product[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+
+========== .\prisma.config.ts ==========
+// This file was generated by Prisma, and assumes you have installed the following:
+// npm install --save-dev prisma dotenv
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+  },
+  datasource: {
+    url: process.env["DATABASE_URL"],
+  },
+});
+
+
+========== .\package.json ==========
+{
+  "name": "love-mimos-express",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "import:nuvemshop": "tsx scripts/import-nuvemshop.ts",
+    "test:tiny-connection": "tsx --conditions=react-server scripts/test-tiny-connection.ts",
+    "sync:tiny-product": "tsx --conditions=react-server scripts/sync-tiny-product.ts",
+    "write:tiny-v2-product": "tsx --conditions=react-server scripts/sync-tiny-v2-product.ts",
+    "compare-tiny-products": "tsx --conditions=react-server scripts/compare-tiny-products.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@tanstack/react-query": "^5.51.23",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.3.19",
+    "lucide-react": "^0.408.0",
+    "next": "14.2.35",
+    "pg": "^8.23.0",
+    "prisma": "^7.9.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.4.0",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.0.1",
+    "@types/node": "^20.14.13",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.35",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.4.40",
+    "server-only": "^0.0.1",
+    "tailwindcss": "^3.4.7",
+    "tsx": "^4.19.1",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
+  }
+}
+
+FullName                                                                                                               
+--------                                                                                                               
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\cache.ts        
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\logger.ts       
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\retry.ts        
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\single-produc...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\single-produc...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\status.ts       
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-category...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-client-e...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-client.t...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-client.ts  
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-integrat...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-integrat...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-mapper.t...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-mapper.ts  
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-product-...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-product-...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-conne...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-conne...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-image...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-image...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-image...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-image...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-image...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-mappe...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-mappe...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-produ...
+C:\Users\Cristiano Silva\Downloads\love-mimos-express (5)\love-mimos-express\src\lib\repositories\tiny\tiny-v2-produ...
+
+
+

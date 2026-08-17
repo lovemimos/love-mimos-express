@@ -1,0 +1,356 @@
+﻿================ useProducts.ts ================
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { products as mockProducts } from "@/lib/data/products";
+import { categories as mockCategories } from "@/lib/data/categories";
+import { applyProductQuery, type ProductQuery, type ProductQueryResult } from "@/lib/repositories/product-query";
+import type { Category } from "@/types";
+
+/**
+ * `useProductQuery` calls the `/api/products` Route Handler, never
+ * `catalogService`/Tiny code directly â€” that boundary is what keeps Tiny
+ * credentials and network calls entirely server-side (see
+ * docs/ARCHITECTURE.md and docs/API_TINY.md Â§4). Swapping the data
+ * source (mock â†” tiny) only ever touches `DATA_SOURCE` in `.env` â€” this
+ * file never changes either way.
+ *
+ * `initialData` runs `applyProductQuery` against the local mock array â€”
+ * the exact same pure function the repositories call server-side (see
+ * src/lib/repositories/product-query.ts) â€” purely to avoid a loading
+ * flash on first render (see docs/ARCHITECTURE.md Â§5). It is NOT a
+ * second implementation of search/sort/pagination; it's the one true
+ * implementation, called from the client for this one bootstrap case.
+ */
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Falha ao buscar ${url}: HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+function buildProductsUrl(query: ProductQuery): string {
+  const params = new URLSearchParams();
+  if (query.search) params.set("q", query.search);
+  if (query.categorySlug) params.set("categoria", query.categorySlug);
+  if (query.sort) params.set("ordem", query.sort);
+  if (query.page) params.set("pagina", String(query.page));
+  if (query.pageSize) params.set("limite", String(query.pageSize));
+  if (query.onlyAvailable) params.set("disponivel", "1");
+  if (query.featuredOnly) params.set("destaque", "1");
+  if (query.badge) params.set("badge", query.badge);
+  const qs = params.toString();
+  return qs ? `/api/products?${qs}` : "/api/products";
+}
+
+/**
+ * The one hook every catalog-browsing screen uses (Home, Busca). Pass a
+ * `ProductQuery` â€” see src/lib/repositories/product-query.ts for the
+ * full shape (search, categorySlug, sort, page, pageSize, ...).
+ *
+ * `placeholderData: keepPreviousData` avoids a flash back to an empty/
+ * loading grid while a new page or filter is being fetched â€” the
+ * previous page's results stay visible (with `isFetching` true) until
+ * the new ones arrive, which reads as "updating", not "reset".
+ */
+export function useProductQuery(query: ProductQuery) {
+  return useQuery({
+    queryKey: ["products", "query", query],
+    queryFn: () => fetchJson<ProductQueryResult>(buildProductsUrl(query)),
+    initialData: () => applyProductQuery(mockProducts, query),
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useCategories() {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { categories } = await fetchJson<{ categories: Category[] }>(
+        "/api/categories"
+      );
+      return categories;
+    },
+    initialData: mockCategories,
+  });
+}
+================ API PRODUCTS ================
+import { NextResponse } from "next/server";
+import { catalogService } from "@/services/catalog-service";
+import type { ProductQuery, ProductSortOrder } from "@/lib/repositories/product-query";
+import { FACET_KEYS } from "@/lib/facets/registry";
+
+export const dynamic = "force-dynamic";
+
+const SORT_PARAM_VALUES: ProductSortOrder[] = ["relevancia", "menor-preco", "maior-preco", "nome-asc"];
+const BADGE_PARAM_VALUES = ["novo", "mais-vendido", "promocao"] as const;
+
+function parseIntParam(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function parseFloatParam(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+/**
+ * GET /api/products?q=cola&categoria=adesivos&ordem=menor-preco&pagina=1&limite=12&badge=mais-vendido
+ *   &atributo_marca=Maria+Sasha,Fadvan&precoMin=20&precoMax=80
+ *
+ * This route exists so Client Components (Home, Busca) can read the
+ * catalog without ever importing `catalogService`/Tiny code into the
+ * browser bundle â€” see docs/ARCHITECTURE.md. It's a thin pass-through:
+ * all the actual query logic lives in `catalogService` â†’
+ * `ProductRepository.query()` â†’ the shared engine in
+ * src/lib/repositories/product-query.ts. Parameter *names* here are
+ * Love Mimos' own (Portuguese, URL-friendly) vocabulary â€” never Tiny's
+ * â€” see docs/features/home-and-search.md.
+ *
+ * Facet params are `atributo_{chave}=valor1,valor2` â€” one param per
+ * facet key from `FACET_REGISTRY` (src/lib/facets/registry.ts). Adding
+ * a new facet to the registry makes it filterable here automatically,
+ * no route change needed.
+ */
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const sortParam = searchParams.get("ordem");
+  const badgeParam = searchParams.get("badge");
+
+  const attributes: Record<string, string[]> = {};
+  for (const key of FACET_KEYS) {
+    const raw = searchParams.get(`atributo_${key}`);
+    if (raw) attributes[key] = raw.split(",").filter(Boolean);
+  }
+
+  const query: ProductQuery = {
+    search: searchParams.get("q") ?? undefined,
+    categorySlug: searchParams.get("categoria") ?? undefined,
+    sort: sortParam && (SORT_PARAM_VALUES as string[]).includes(sortParam) ? (sortParam as ProductSortOrder) : undefined,
+    page: parseIntParam(searchParams.get("pagina")),
+    pageSize: parseIntParam(searchParams.get("limite")),
+    onlyAvailable: searchParams.get("disponivel") === "1",
+    featuredOnly: searchParams.get("destaque") === "1",
+    badge:
+      badgeParam && (BADGE_PARAM_VALUES as readonly string[]).includes(badgeParam)
+        ? (badgeParam as ProductQuery["badge"])
+        : undefined,
+    attributes: Object.keys(attributes).length > 0 ? attributes : undefined,
+    priceMin: parseFloatParam(searchParams.get("precoMin")),
+    priceMax: parseFloatParam(searchParams.get("precoMax")),
+  };
+
+  try {
+    const result = await catalogService.queryProducts(query);
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error("[api/products] falha ao carregar catÃ¡logo:", err);
+    return NextResponse.json(
+      { items: [], total: 0, page: 1, pageSize: 12, hasMore: false, error: "NÃ£o foi possÃ­vel carregar o catÃ¡logo." },
+      { status: 502 }
+    );
+  }
+}
+================ API CATEGORIES ================
+import { NextResponse } from "next/server";
+import { catalogService } from "@/services/catalog-service";
+
+export const dynamic = "force-dynamic";
+
+export async function GET() {
+  try {
+    const categories = await catalogService.listCategories();
+    return NextResponse.json({ categories });
+  } catch (err) {
+    console.error("[api/categories] falha ao carregar categorias:", err);
+    return NextResponse.json(
+      { categories: [], error: "NÃ£o foi possÃ­vel carregar as categorias." },
+      { status: 502 }
+    );
+  }
+}
+================ PRODUCT QUERY - INICIO ================
+import type { Product } from "@/types";
+import { searchTerms, normalizeSearchText } from "@/utils/normalize-text";
+
+/**
+ * Sort orders the UI can request. Deliberately small and named for what
+ * the *shopper* is asking for ("cheapest first"), not for any specific
+ * data source's sort syntax â€” this is exactly the kind of Tiny-specific
+ * coupling docs/API_TINY.md warns against baking into our contract.
+ */
+export type ProductSortOrder = "relevancia" | "menor-preco" | "maior-preco" | "nome-asc";
+
+const VALID_SORTS: ProductSortOrder[] = ["relevancia", "menor-preco", "maior-preco", "nome-asc"];
+
+export const DEFAULT_PAGE_SIZE = 12;
+export const MAX_PAGE_SIZE = 100;
+
+/**
+ * The one query shape every `ProductRepository` implementation supports.
+ * All fields optional â€” an empty query just means "everything, page 1".
+ */
+export type ProductQuery = {
+  search?: string;
+  categorySlug?: string;
+  /** Filters by `Product.brandSlug` â€” a dedicated filter, not part of
+   * `attributes`, because Brand is a first-class entity (see
+   * src/types/index.ts and docs/features/faceted-catalog.md), not a
+   * generic facet string. */
+  brandSlug?: string;
+  sort?: ProductSortOrder;
+  page?: number; // 1-based
+  pageSize?: number;
+  onlyAvailable?: boolean; // stock > 0
+  featuredOnly?: boolean; // has any marketing badge (novo/mais-vendido/promocao)
+  badge?: Product["badge"]; // a *specific* badge â€” e.g. "mais-vendido" for a Best Sellers section (Sprint 9)
+  /**
+   * Faceted attribute filters â€” e.g. `{ cor: ["Preto", "Azul"] }`.
+   * Semantics: a product matches a facet key if EITHER its own
+   * `attributes[key]` OR any of its variants' `attributes[key]` is
+   * included in the given array (OR within a facet); a product must
+   * match every facet key present in this object (AND across facets).
+   * See docs/features/faceted-catalog.md.
+   */
+  attributes?: Record<string, string[]>;
+  /** Free-keyword filter over `Product.tags` â€” a product matches if it
+   * has at least one of the given tags. */
+  tags?: string[];
+  priceMin?: number;
+  priceMax?: number;
+};
+
+export type ProductQueryResult = {
+  items: Product[];
+  total: number; // total matches across all pages, not just this page's length
+  page: number; // the page actually served (after fallback normalization)
+  pageSize: number; // the page size actually served (after fallback normalization)
+  hasMore: boolean;
+};
+
+/**
+ * Normalizes a raw (possibly attacker- or typo-supplied, e.g. from a URL
+ * query string) `ProductQuery` into safe values â€” see requirement in
+ * docs/features/product.md and Sprint 6 task 11. Never throws; always
+ * returns something usable.
+ */
+export function normalizeProductQuery(raw: ProductQuery): Required<
+  Pick<ProductQuery, "sort" | "page" | "pageSize">
+> &
+  ProductQuery {
+  const sort = raw.sort && VALID_SORTS.includes(raw.sort) ? raw.sort : "relevancia";
+
+  const rawPage = raw.page;
+  const page = Number.isFinite(rawPage) && (rawPage as number) >= 1 ? Math.floor(rawPage as number) : 1;
+
+  const rawPageSize = raw.pageSize;
+  let pageSize =
+    Number.isFinite(rawPageSize) && (rawPageSize as number) > 0
+      ? Math.floor(rawPageSize as number)
+      : DEFAULT_PAGE_SIZE;
+  if (pageSize > MAX_PAGE_SIZE) pageSize = MAX_PAGE_SIZE;
+
+  return { ...raw, sort, page, pageSize };
+}
+
+/**
+ * The actual query engine: filter â†’ search-score â†’ sort â†’ paginate.
+ * Pure function over an in-memory `Product[]` â€” both
+ * `MockProductRepository` and `TinyProductRepository` call this over
+ * their respective full catalogs (mock: the static array; Tiny: the
+ * already-fetched/cached mapped catalog â€” see docs/API_TINY.md Â§11 on
+ * why Tiny can't push this filtering down to its own API). This is the
+ * single place search/sort/pagination logic lives â€” never duplicated
+ * per repository, per page, or between client and server.
+ */
+export function applyProductQuery(products: Product[], rawQuery: ProductQuery): ProductQueryResult {
+  const query = normalizeProductQuery(rawQuery);
+  let results = products;
+
+  if (query.categorySlug) {
+    results = results.filter((p) => p.categorySlug === query.categorySlug);
+  }
+  if (query.brandSlug) {
+    results = results.filter((p) => p.brandSlug === query.brandSlug);
+  }
+  if (query.onlyAvailable) {
+    results = results.filter((p) => p.stock > 0);
+  }
+  if (query.featuredOnly) {
+    results = results.filter((p) => Boolean(p.badge));
+  }
+  if (query.badge) {
+    results = results.filter((p) => p.badge === query.badge);
+  }
+  if (query.attributes) {
+    for (const [key, values] of Object.entries(query.attributes)) {
+      if (!values || values.length === 0) continue;
+      results = results.filter((p) => productHasAttributeValue(p, key, values));
+    }
+  }
+  if (query.tags && query.tags.length > 0) {
+    results = results.filter((p) => p.tags?.some((t) => query.tags!.includes(t)));
+  }
+  if (query.priceMin !== undefined) {
+    results = results.filter((p) => p.price >= query.priceMin!);
+  }
+  if (query.priceMax !== undefined) {
+    results = results.filter((p) => p.price <= query.priceMax!);
+  }
+
+  const terms = query.search ? searchTerms(query.search) : [];
+  let scoreById: Map<string, number> | null = null;
+
+  if (terms.length > 0) {
+    scoreById = new Map();
+    results = results.filter((product) => {
+      const score = scoreMatch(product, terms);
+      if (score > 0) scoreById!.set(product.id, score);
+      return score > 0;
+    });
+  }
+
+  results = sortResults(results, query.sort, scoreById);
+
+  const total = results.length;
+  const start = (query.page - 1) * query.pageSize;
+  const items = results.slice(start, start + query.pageSize);
+  const hasMore = start + items.length < total;
+
+  return { items, total, page: query.page, pageSize: query.pageSize, hasMore };
+}
+
+/**
+ * True if the product matches a facet value either at the product
+ * level (`product.attributes[key]`) or on any of its variants
+ * (`variant.attributes[key]`) â€” a product with real color variants
+ * stores color per-variant (see `ProductVariant.attributes` in
+ * src/types/index.ts), so a filter that only checked the product level
+ * would silently never match those products.
+ */
+function productHasAttributeValue(product: Product, key: string, values: string[]): boolean {
+  const productValue = product.attributes?.[key];
+  if (productValue && values.includes(productValue)) return true;
+
+  return (product.variants ?? []).some((v) => {
+    const variantValue = v.attributes?.[key];
+    return variantValue && values.includes(variantValue);
+  });
+}
+
+/**
+ * Every search word must match somewhere in the product (AND semantics)
+ * â€” this is what makes "cilios marrom" find "CÃ­lios Marrom Fio a Fio"
+ * regardless of accent/case, while not matching a product that only has
+ * "cilios" and nothing resembling "marrom" anywhere. Matches in the name
+ * score highest (and a match at the very start of the name scores
+ * highest of all), then short description, category, facet attribute
+ * values (marca, tÃ©cnica, efeito, ...), SKU, then the long description â€”
+ * this ordering is what "relevÃ¢ncia" sorts by.
+ */
+function scoreMatch(product: Product, terms: string[]): number {
+  const name = normalizeSearchText(product.name);

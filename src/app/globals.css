@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-fraunces: "Fraunces", serif;
+  --font-jakarta: "Plus Jakarta Sans", sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overscroll-behavior-y: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Signature element: a hand-drawn lash-curl underline used under the
+   wordmark and as a section divider — ties the visual identity directly
+   back to the product world (lash design) instead of a generic rule/line. */
+.lash-underline {
+  display: block;
+  height: 10px;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus, kept brand-consistent */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid #c6376b;
+  outline-offset: 2px;
+  border-radius: 6px;
+}

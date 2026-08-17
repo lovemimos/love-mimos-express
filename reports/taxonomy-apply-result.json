@@ -1,0 +1,1219 @@
+{
+  "totalCSV": 583,
+  "encontradosBanco": 411,
+  "naoEncontradosBanco": 172,
+  "atualizados": 411,
+  "errosValidacao": 0,
+  "departamentos": {
+    "Nail Designer": 86,
+    "Lash Designer": 268,
+    "Sobrancelhas": 40,
+    "Profissional / Acessórios Gerais": 17
+  },
+  "naoEncontrados": [
+    {
+      "tinyId": "738051208",
+      "nome": "Caneta em Gel branca",
+      "departamento": "Lash Designer",
+      "categoria": "Acessórios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "805217402",
+      "nome": "Cilios  5D  curvatura M -  Fadvan - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803625150",
+      "nome": "Cílios  Y  Marrom  Fadvan  - volume brasileiro - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051384",
+      "nome": "Cílios 3D decemars",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044830",
+      "nome": "Cílios 3D fadvan - 3D W - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044772",
+      "nome": "Cílios 4D  Decemars- 4D w - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044768",
+      "nome": "Cílios 4D  Decemars- 4D w - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044764",
+      "nome": "Cílios 4D  Decemars- 4D w - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803627538",
+      "nome": "Cilios 4D Curvatura M - Maria Sasha  - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803627541",
+      "nome": "Cilios 4D Curvatura M - Maria Sasha  - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803627544",
+      "nome": "Cilios 4D Curvatura M - Maria Sasha  - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803627547",
+      "nome": "Cilios 4D Curvatura M - Maria Sasha  - 7mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803627550",
+      "nome": "Cilios 4D Curvatura M - Maria Sasha  - Mix 7-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076384",
+      "nome": "Cílios 4D W Marrom - Decemars",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044577",
+      "nome": "Cílios 5d  Decemars - 5D w",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044601",
+      "nome": "Cílios 5d  Decemars - 5D w - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "766411819",
+      "nome": "Cílios 5D  Fadvan curvatura D - 5Dw  - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "766411822",
+      "nome": "Cílios 5D  Fadvan curvatura D - 5Dw  - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803628722",
+      "nome": "Cílios 5D curvatura M - Maria Sasha - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803628700",
+      "nome": "Cílios 5D curvatura M - Maria Sasha - 6mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "803628703",
+      "nome": "Cílios 5D curvatura M - Maria Sasha - 7mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075340",
+      "nome": "Cílios Decemars Y volume brasileiro - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075287",
+      "nome": "Cílios Decemars Y volume brasileiro - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075298",
+      "nome": "Cílios Decemars Y volume brasileiro - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075347",
+      "nome": "Cílios Decemars Y volume brasileiro - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075354",
+      "nome": "Cílios Decemars Y volume brasileiro - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075359",
+      "nome": "Cílios Decemars- 4D w",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075414",
+      "nome": "Cílios Decemars- 4D w - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075409",
+      "nome": "Cílios Decemars- 4D w - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075402",
+      "nome": "Cílios Decemars- 4D w - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075398",
+      "nome": "Cílios Decemars- 4D w - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075394",
+      "nome": "Cílios Decemars- 4D w - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075390",
+      "nome": "Cílios Decemars- 4D w - 15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075423",
+      "nome": "Cílios Decemars- 4D w - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075418",
+      "nome": "Cílios Decemars- 4D w - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075431",
+      "nome": "Cílios Decemars- 4D w - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075427",
+      "nome": "Cílios Decemars- 4D w - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044798",
+      "nome": "Cílios fadvan 3D W",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075456",
+      "nome": "Cílios fadvan 3D W - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075460",
+      "nome": "Cílios fadvan 3D W - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075464",
+      "nome": "Cílios fadvan 3D W - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075469",
+      "nome": "Cílios fadvan 3D W - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075473",
+      "nome": "Cílios fadvan 3D W - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075448",
+      "nome": "Cílios fadvan 3D W - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075452",
+      "nome": "Cílios fadvan 3D W - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075478",
+      "nome": "Cílios fadvan 3D W - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044854",
+      "nome": "Cílios Fadvan 4D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044876",
+      "nome": "Cílios Fadvan 4D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044880",
+      "nome": "Cílios Fadvan 4D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044884",
+      "nome": "Cílios Fadvan 4D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044888",
+      "nome": "Cílios Fadvan 4D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044892",
+      "nome": "Cílios Fadvan 4D - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044872",
+      "nome": "Cílios Fadvan 4D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044868",
+      "nome": "Cílios Fadvan 4D - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044896",
+      "nome": "Cílios Fadvan 4D - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075518",
+      "nome": "Cílios Fadvan 5D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075562",
+      "nome": "Cílios Fadvan 5D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075566",
+      "nome": "Cílios Fadvan 5D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075572",
+      "nome": "Cílios Fadvan 5D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075577",
+      "nome": "Cílios Fadvan 5D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075583",
+      "nome": "Cílios Fadvan 5D - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075552",
+      "nome": "Cílios Fadvan 5D - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075556",
+      "nome": "Cílios Fadvan 5D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075593",
+      "nome": "Cílios Fadvan 5D - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075588",
+      "nome": "Cílios Fadvan 5D - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075597",
+      "nome": "Cílios Fadvan 6DW - (3D duplo)",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075634",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075638",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075643",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075647",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075630",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075625",
+      "nome": "Cílios Fadvan 6DW - (3D duplo) - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076212",
+      "nome": "Cilios Fadvan 8D - (4D duplo)",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076226",
+      "nome": "Cilios Fadvan 8D - (4D duplo) - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051700",
+      "nome": "Cílios Fadvan Y Curvatura L",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076144",
+      "nome": "Cilios Fadvan Y curvatura M",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044957",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044981",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044985",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044989",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044993",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044997",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044973",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044977",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045001",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045005",
+      "nome": "Cílios Fadvan Y Y - Vol Brasileiro - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045016",
+      "nome": "Cílios fio a fio  - Nagaraku  Mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045047",
+      "nome": "Cílios fio a fio  - Nagaraku  Mix - 0.05mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045042",
+      "nome": "Cílios fio a fio  - Nagaraku  Mix - 0.07mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045034",
+      "nome": "Cílios fio a fio  - Nagaraku  Mix - 0.15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045038",
+      "nome": "Cílios fio a fio  - Nagaraku  Mix - 0.20mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "804858231",
+      "nome": "Cílios fio a fio  0.05 curvatura C - Nagaraku  Mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047304",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047323",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047330",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047335",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047340",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047345",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047355",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047350",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047317",
+      "nome": "Cilios fio a fio  Nagaraku  0.05D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047781",
+      "nome": "Cilios fio a fio  Nagaraku  0.07D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047785",
+      "nome": "Cilios fio a fio  Nagaraku  0.07D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047789",
+      "nome": "Cilios fio a fio  Nagaraku  0.07D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047793",
+      "nome": "Cilios fio a fio  Nagaraku  0.07D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047777",
+      "nome": "Cilios fio a fio  Nagaraku  0.07D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806077334",
+      "nome": "Cílios formato 5D em formato U , Fadvan",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806077293",
+      "nome": "Cílios formato UYY em formato U , Fadvan",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076350",
+      "nome": "Cílios Maria Sasha 3D W curvatura M",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075704",
+      "nome": "Cílios Nagaraku fio a fio , volume mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075736",
+      "nome": "Cílios Nagaraku fio a fio , volume mix - 0.05mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075731",
+      "nome": "Cílios Nagaraku fio a fio , volume mix - 0.07mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075722",
+      "nome": "Cílios Nagaraku fio a fio , volume mix - 0.15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806075726",
+      "nome": "Cílios Nagaraku fio a fio , volume mix - 0.20mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076014",
+      "nome": "Cilios nagaraku fio a fio 0.05D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076050",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076057",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076064",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076071",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076078",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076096",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076088",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076043",
+      "nome": "Cilios nagaraku fio a fio 0.05D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047763",
+      "nome": "Cilios nagaraku fio a fio 0.07D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076309",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076313",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076317",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076322",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047798",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047808",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 15mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741047803",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076305",
+      "nome": "Cilios nagaraku fio a fio 0.07D - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045054",
+      "nome": "Cílios nagaraku Y - Volume brasileiro",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045090",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045094",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045098",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045103",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045110",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045081",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045086",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045121",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741045116",
+      "nome": "Cílios nagaraku Y - Volume brasileiro - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051838",
+      "nome": "Cílios para treino",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051851",
+      "nome": "Cílios tufo fadvan - FD18 mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048304",
+      "nome": "Cílios Tufo Nesura Eyelash 10D",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048312",
+      "nome": "Cílios Tufo Nesura Eyelash 10D - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048317",
+      "nome": "Cílios Tufo Nesura Eyelash 10D - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051863",
+      "nome": "Cílios tufo New show - 30P + 40P - mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048322",
+      "nome": "Cílios tufo New show 20p",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048330",
+      "nome": "Cílios tufo New show 20p - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048335",
+      "nome": "Cílios tufo New show 20p - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741048340",
+      "nome": "Cílios tufo New show 20p - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076488",
+      "nome": "Cílios tufo potinho para alongamento - Tufinho",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076504",
+      "nome": "Cílios tufo potinho para alongamento - Tufinho - 10",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076512",
+      "nome": "Cílios tufo potinho para alongamento - Tufinho - 12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076518",
+      "nome": "Cílios tufo potinho para alongamento - Tufinho - 14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044658",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 10mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044663",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 11mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044668",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 12mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044673",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 13mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044678",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044648",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 8mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044653",
+      "nome": "Cílios Y  Decemars - volume brasileiro - 9mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044683",
+      "nome": "Cílios Y  Decemars - volume brasileiro - Mix 8-12",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "741044688",
+      "nome": "Cílios Y  Decemars - volume brasileiro - Mix 8-14",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051480",
+      "nome": "Cílios Y  Marrom Decemars",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051866",
+      "nome": "Cílios Y colorido fadvan - Mix",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "806076393",
+      "nome": "Cílios Y Fadvan curvatura C",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051870",
+      "nome": "Cílios Y Fadvan Curvatura C Mix 8-14mm",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738051883",
+      "nome": "Cílios Y Maria Sasha Curvatura M - Volume Brasileiro",
+      "departamento": "Lash Designer",
+      "categoria": "Cílios",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738052229",
+      "nome": "Espelho de mão",
+      "departamento": "Profissional / Acessórios Gerais",
+      "categoria": "Espelhos",
+      "decisao": "AUTO_APROVADO"
+    },
+    {
+      "tinyId": "738053946",
+      "nome": "Pulseira para pinça - Anti queda",
+      "departamento": "Lash Designer",
+      "categoria": "Pinças",
+      "decisao": "AUTO_APROVADO"
+    }
+  ]
+}
