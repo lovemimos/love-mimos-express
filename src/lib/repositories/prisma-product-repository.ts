@@ -58,6 +58,8 @@ function mapVariant(
       ? { source: "tiny", id: variant.tinyId }
       : undefined,
     attributes: parseAttributes(variant.attributes),
+    stock: variant.stock,
+    active: variant.active,
   };
 }
 
@@ -74,6 +76,7 @@ function mapProduct(row: DbProduct): Product {
     compareAtPrice:
       row.compareAtPrice == null ? undefined : Number(row.compareAtPrice),
     stock: row.stock,
+    active: row.active,
     sku: row.sku ?? undefined,
     externalRef: row.tinyId
       ? { source: "tiny", id: row.tinyId }
@@ -84,17 +87,38 @@ function mapProduct(row: DbProduct): Product {
       .slice()
       .sort((a, b) => a.position - b.position)
       .map((image) => image.url),
-    variants: row.variants
-      .filter((variant) => variant.active)
-      .map((variant) => mapVariant(variant, price)),
+    variants: row.variants.map((variant) => mapVariant(variant, price)),
+  };
+}
+
+/**
+ * Tiny variation children may still exist historically in Product, while the
+ * canonical sellable representation is now ProductVariant. Excluding by the
+ * shared Tiny identity keeps those rows for history without ever exposing a
+ * variation child as an independent storefront product.
+ */
+async function catalogVisibilityWhere(): Promise<Prisma.ProductWhereInput> {
+  const variantIdentities = await prisma.productVariant.findMany({
+    where: { tinyId: { not: null } },
+    select: { tinyId: true },
+  });
+  const legacyTinyIds = variantIdentities
+    .map((variant) => variant.tinyId)
+    .filter((tinyId): tinyId is string => Boolean(tinyId));
+
+  return {
+    active: true,
+    classificationStatus: "CLASSIFIED",
+    ...(legacyTinyIds.length ? { tinyId: { notIn: legacyTinyIds } } : {}),
   };
 }
 
 export class PrismaProductRepository implements ProductRepository {
   async query(params: ProductQuery): Promise<ProductQueryResult> {
+    const visibility = await catalogVisibilityWhere();
     const rows = await prisma.product.findMany({
       where: {
-        active: true,
+        ...visibility,
         ...(params.departmentSlug
           ? {
               department: {
@@ -111,8 +135,9 @@ export class PrismaProductRepository implements ProductRepository {
   }
 
   async findAll(): Promise<Product[]> {
+    const visibility = await catalogVisibilityWhere();
     const rows = await prisma.product.findMany({
-      where: { active: true },
+      where: visibility,
       include: productInclude,
       orderBy: { name: "asc" },
     });
@@ -121,8 +146,9 @@ export class PrismaProductRepository implements ProductRepository {
   }
 
   async findBySlug(slug: string): Promise<Product | undefined> {
+    const visibility = await catalogVisibilityWhere();
     const row = await prisma.product.findFirst({
-      where: { slug, active: true },
+      where: { slug, ...visibility },
       include: productInclude,
     });
 
@@ -130,9 +156,10 @@ export class PrismaProductRepository implements ProductRepository {
   }
 
   async findByCategory(categorySlug: string): Promise<Product[]> {
+    const visibility = await catalogVisibilityWhere();
     const rows = await prisma.product.findMany({
       where: {
-        active: true,
+        ...visibility,
         category: { is: { slug: categorySlug } },
       },
       include: productInclude,

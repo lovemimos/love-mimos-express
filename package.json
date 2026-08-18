@@ -15,6 +15,8 @@
     "import:nuvemshop": "tsx scripts/import-nuvemshop.ts",
     "test:tiny-connection": "tsx --conditions=react-server scripts/test-tiny-connection.ts",
     "sync:tiny-product": "tsx --conditions=react-server scripts/sync-tiny-product.ts",
+    "sync:tiny": "tsx --conditions=react-server scripts/sync-tiny-durable.ts",
+    "sync:tiny:full": "tsx --conditions=react-server scripts/sync-tiny-durable.ts --full",
     "write:tiny-v2-product": "tsx --conditions=react-server scripts/sync-tiny-v2-product.ts",
     "compare-tiny-products": "tsx --conditions=react-server scripts/compare-tiny-products.ts"
   },

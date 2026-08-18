@@ -1,5 +1,6 @@
 ﻿import type { Product } from "@/types";
 import { searchTerms, normalizeSearchText } from "@/utils/normalize-text";
+import { isProductAvailable } from "@/lib/availability";
 
 /**
  * Sort orders the UI can request. Deliberately small and named for what
@@ -30,7 +31,7 @@ export type ProductQuery = {
   sort?: ProductSortOrder;
   page?: number; // 1-based
   pageSize?: number;
-  onlyAvailable?: boolean; // stock > 0
+  onlyAvailable?: boolean;
   featuredOnly?: boolean; // has any marketing badge (novo/mais-vendido/promocao)
   badge?: Product["badge"]; // a *specific* badge â€” e.g. "mais-vendido" for a Best Sellers section (Sprint 9)
   /**
@@ -103,7 +104,7 @@ export function applyProductQuery(products: Product[], rawQuery: ProductQuery): 
     results = results.filter((p) => p.brandSlug === query.brandSlug);
   }
   if (query.onlyAvailable) {
-    results = results.filter((p) => p.stock > 0);
+    results = results.filter(isProductAvailable);
   }
   if (query.featuredOnly) {
     results = results.filter((p) => Boolean(p.badge));

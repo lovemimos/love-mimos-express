@@ -6,6 +6,7 @@ import Rating from "@/components/ui/Rating";
 import { formatBRL } from "@/utils/format";
 import { trackEvent } from "@/lib/analytics";
 import type { Product } from "@/types";
+import { isProductAvailable } from "@/lib/availability";
 
 export default function ProductCard({
   product,
@@ -24,7 +25,7 @@ export default function ProductCard({
           ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
         )
       : null;
-  const outOfStock = product.stock <= 0;
+  const outOfStock = !isProductAvailable(product);
 
   return (
     <Link

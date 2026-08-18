@@ -61,6 +61,8 @@ export type ProductVariant = {
    * `src/lib/repositories/product-query.ts`.
    */
   attributes?: Record<string, string>;
+  stock?: number;
+  active?: boolean;
 };
 
 export type Product = {
@@ -72,6 +74,7 @@ export type Product = {
   price: number; // current price, in BRL
   compareAtPrice?: number; // original price, if on promotion
   stock: number;
+  active?: boolean;
 
   // Identidade/estoque — campos singulares, nunca "navegáveis" (não é o
   // tipo de coisa que alguém filtra a vitrine por). Mapeiam 1:1 com a

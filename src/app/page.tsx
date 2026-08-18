@@ -6,8 +6,11 @@ import Header from "@/components/layout/Header";
 import SearchBar from "@/features/product/components/SearchBar";
 import CategoryPills from "@/features/product/components/CategoryPills";
 import ProductGrid from "@/features/product/components/ProductGrid";
+import DepartmentPills from "@/features/product/components/DepartmentPills";
+import CatalogFilterPanel from "@/features/product/components/CatalogFilterPanel";
 import HomeHero from "@/features/home/components/HomeHero";
-import { useProductQuery, useCategories } from "@/hooks/useProducts";
+import { useProductQuery, useCategories, useDepartments, useBrands } from "@/hooks/useProducts";
+import type { ProductSortOrder } from "@/lib/repositories/product-query";
 import { banners } from "@/lib/data/banners";
 import { homeRecommendationProvider } from "@/services/recommendations";
 
@@ -26,18 +29,29 @@ const RecommendationSection = dynamic(() => import("@/features/recommendations/c
 // Home shows the whole (filtered) catalog at once, no "load more" — a
 // generous page size keeps that feel without a second, duplicate
 // client-side filter on top of the query. See docs/features/home-and-search.md.
-const HOME_PAGE_SIZE = 100;
+const HOME_PAGE_SIZE = 500;
+const DEFAULT_DEPARTMENT = "lash-designer";
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [department, setDepartment] = useState(DEFAULT_DEPARTMENT);
+  const [brand, setBrand] = useState<string | null>(null);
+  const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [sort, setSort] = useState<ProductSortOrder>("relevancia");
 
   const { data, isLoading, isError, refetch } = useProductQuery({
     search: query || undefined,
     categorySlug: activeCategory || undefined,
+    departmentSlug: department,
+    brandSlug: brand || undefined,
+    onlyAvailable,
+    sort,
     pageSize: HOME_PAGE_SIZE,
   });
-  const { data: categories = [] } = useCategories();
+  const { data: categories = [] } = useCategories(department);
+  const { data: departments = [] } = useDepartments();
+  const { data: brands = [] } = useBrands(department, activeCategory ?? undefined, onlyAvailable);
 
   const products = data?.items ?? [];
   const total = data?.total ?? 0;
@@ -45,6 +59,15 @@ export default function HomePage() {
   function clearFilters() {
     setQuery("");
     setActiveCategory(null);
+    setBrand(null);
+    setOnlyAvailable(false);
+    setSort("relevancia");
+  }
+
+  function selectDepartment(slug: string) {
+    setDepartment(slug);
+    setActiveCategory(null);
+    setBrand(null);
   }
 
   return (
@@ -68,6 +91,11 @@ export default function HomePage() {
         source="home"
       />
 
+      <section aria-label="Departamentos" className="mb-1">
+        <p className="px-4 pt-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Departamento</p>
+        <DepartmentPills departments={departments} active={department} onSelect={selectDepartment} />
+      </section>
+
       <section className="mb-2">
         <CategoryPills
           categories={categories}
@@ -75,6 +103,16 @@ export default function HomePage() {
           onSelect={setActiveCategory}
         />
       </section>
+
+      <CatalogFilterPanel
+        brands={brands}
+        brand={brand}
+        onBrandChange={setBrand}
+        onlyAvailable={onlyAvailable}
+        onOnlyAvailableChange={setOnlyAvailable}
+        sort={sort}
+        onSortChange={setSort}
+      />
 
       <section className="mt-2 flex items-center justify-between px-4 pb-2">
         <h2 className="font-display text-h2 text-plum">
@@ -97,7 +135,7 @@ export default function HomePage() {
             : "Explore outra categoria ou veja o catálogo completo."
         }
         emptyAction={
-          query || activeCategory
+          query || activeCategory || brand || onlyAvailable
             ? { label: "Ver todos os produtos", onClick: clearFilters }
             : undefined
         }

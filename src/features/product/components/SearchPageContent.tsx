@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SearchBar from "@/features/product/components/SearchBar";
 import CategoryPills from "@/features/product/components/CategoryPills";
-import SortSelect from "@/features/product/components/SortSelect";
 import ProductGrid from "@/features/product/components/ProductGrid";
+import DepartmentPills from "@/features/product/components/DepartmentPills";
+import CatalogFilterPanel from "@/features/product/components/CatalogFilterPanel";
 import { Button } from "@/components/ui/button";
-import { useProductQuery, useCategories } from "@/hooks/useProducts";
+import { useProductQuery, useCategories, useDepartments, useBrands } from "@/hooks/useProducts";
 import type { ProductSortOrder } from "@/lib/repositories/product-query";
 import type { Product } from "@/types";
 
@@ -18,6 +19,7 @@ const PAGE_SIZE = 8;
 // Only the URL write (and therefore the network refetch) is debounced —
 // the input's visible value is never delayed. See SearchBar/task 8.
 const SEARCH_SYNC_DEBOUNCE_MS = 400;
+const DEFAULT_DEPARTMENT = "lash-designer";
 
 function readSort(raw: string | null): ProductSortOrder {
   if (raw === "menor-preco" || raw === "maior-preco" || raw === "nome-asc" || raw === "relevancia") {
@@ -46,6 +48,9 @@ export default function SearchPageContent() {
 
   const urlQuery = searchParams.get("q") ?? "";
   const activeCategory = searchParams.get("categoria");
+  const department = searchParams.get("departamento") ?? DEFAULT_DEPARTMENT;
+  const brand = searchParams.get("marca");
+  const onlyAvailable = searchParams.get("disponivel") === "1";
   const sort = readSort(searchParams.get("ordem"));
 
   const [query, setQuery] = useState(urlQuery);
@@ -59,7 +64,14 @@ export default function SearchPageContent() {
     setQuery(urlQuery);
   }, [urlQuery]);
 
-  function updateUrl(next: { q?: string; categoria?: string | null; ordem?: ProductSortOrder }) {
+  function updateUrl(next: {
+    q?: string;
+    categoria?: string | null;
+    departamento?: string;
+    marca?: string | null;
+    disponivel?: boolean;
+    ordem?: ProductSortOrder;
+  }) {
     const params = new URLSearchParams(searchParams.toString());
 
     if (next.q !== undefined) {
@@ -69,6 +81,15 @@ export default function SearchPageContent() {
     if (next.categoria !== undefined) {
       if (next.categoria) params.set("categoria", next.categoria);
       else params.delete("categoria");
+    }
+    if (next.departamento !== undefined) params.set("departamento", next.departamento);
+    if (next.marca !== undefined) {
+      if (next.marca) params.set("marca", next.marca);
+      else params.delete("marca");
+    }
+    if (next.disponivel !== undefined) {
+      if (next.disponivel) params.set("disponivel", "1");
+      else params.delete("disponivel");
     }
     if (next.ordem !== undefined) {
       if (next.ordem && next.ordem !== "relevancia") params.set("ordem", next.ordem);
@@ -97,6 +118,11 @@ export default function SearchPageContent() {
     updateUrl({ categoria: slug });
   }
 
+  function handleDepartmentSelect(slug: string) {
+    setPage(1);
+    updateUrl({ departamento: slug, categoria: null, marca: null });
+  }
+
   function handleSortChange(next: ProductSortOrder) {
     setPage(1);
     updateUrl({ ordem: next });
@@ -106,23 +132,28 @@ export default function SearchPageContent() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setQuery("");
     setPage(1);
-    router.replace("/busca", { scroll: false });
+    router.replace(`/busca?departamento=${DEFAULT_DEPARTMENT}`, { scroll: false });
   }
 
   const { data, isLoading, isError, isFetching, refetch } = useProductQuery({
     search: urlQuery || undefined,
     categorySlug: activeCategory || undefined,
+    departmentSlug: department,
+    brandSlug: brand || undefined,
+    onlyAvailable,
     sort,
     page,
     pageSize: PAGE_SIZE,
   });
-  const { data: categories = [] } = useCategories();
+  const { data: categories = [] } = useCategories(department);
+  const { data: departments = [] } = useDepartments();
+  const { data: brands = [] } = useBrands(department, activeCategory ?? undefined, onlyAvailable);
 
   // A new filter combination always replaces the visible list; only
   // incrementing the page (via "Carregar mais") appends to it.
   useEffect(() => {
     setAccumulated([]);
-  }, [urlQuery, activeCategory, sort]);
+  }, [urlQuery, department, activeCategory, brand, onlyAvailable, sort]);
 
   useEffect(() => {
     if (!data) return;
@@ -133,7 +164,7 @@ export default function SearchPageContent() {
     ? categories.find((c) => c.slug === activeCategory)?.name
     : null;
 
-  const hasFilters = Boolean(urlQuery || activeCategory);
+  const hasFilters = Boolean(urlQuery || activeCategory || brand || onlyAvailable || department !== DEFAULT_DEPARTMENT);
 
   return (
     <>
@@ -146,6 +177,11 @@ export default function SearchPageContent() {
         />
       </section>
 
+      <section aria-label="Departamentos" className="mb-1">
+        <p className="px-4 pt-1 text-xs font-semibold uppercase tracking-wide text-ink/50">Departamento</p>
+        <DepartmentPills departments={departments} active={department} onSelect={handleDepartmentSelect} />
+      </section>
+
       <section className="mb-2">
         <CategoryPills
           categories={categories}
@@ -153,6 +189,16 @@ export default function SearchPageContent() {
           onSelect={handleCategorySelect}
         />
       </section>
+
+      <CatalogFilterPanel
+        brands={brands}
+        brand={brand}
+        onBrandChange={(slug) => { setPage(1); updateUrl({ marca: slug }); }}
+        onlyAvailable={onlyAvailable}
+        onOnlyAvailableChange={(value) => { setPage(1); updateUrl({ disponivel: value }); }}
+        sort={sort}
+        onSortChange={handleSortChange}
+      />
 
       <section className="flex items-center justify-between gap-3 px-4 pb-2 pt-2">
         <span className="text-xs text-ink/50">
@@ -162,7 +208,6 @@ export default function SearchPageContent() {
               ? `${data?.total ?? 0} produtos em ${categoryName ?? "categoria"}`
               : `${data?.total ?? 0} produtos`}
         </span>
-        <SortSelect value={sort} onChange={handleSortChange} />
       </section>
 
       <ProductGrid

@@ -54,6 +54,7 @@ export async function GET(request: Request) {
     search: searchParams.get("q") ?? undefined,
     categorySlug: searchParams.get("categoria") ?? undefined,
     departmentSlug: searchParams.get("departamento") ?? undefined,
+    brandSlug: searchParams.get("marca") ?? undefined,
     sort: sortParam && (SORT_PARAM_VALUES as string[]).includes(sortParam) ? (sortParam as ProductSortOrder) : undefined,
     page: parseIntParam(searchParams.get("pagina")),
     pageSize: parseIntParam(searchParams.get("limite")),

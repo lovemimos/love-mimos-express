@@ -31,6 +31,7 @@ function buildProductsUrl(query: ProductQuery): string {
   if (query.search) params.set("q", query.search);
   if (query.categorySlug) params.set("categoria", query.categorySlug);
   if (query.departmentSlug) params.set("departamento", query.departmentSlug);
+  if (query.brandSlug) params.set("marca", query.brandSlug);
   if (query.sort) params.set("ordem", query.sort);
   if (query.page) params.set("pagina", String(query.page));
   if (query.pageSize) params.set("limite", String(query.pageSize));
@@ -69,6 +70,34 @@ export function useCategories(departmentSlug?: string) {
           : "/api/categories"
       );
       return categories;
+    },
+  });
+}
+
+export type CatalogOption = { id: string; name: string; slug: string };
+
+export function useDepartments() {
+  return useQuery({
+    queryKey: ["departments"],
+    queryFn: async () => {
+      const { departments } = await fetchJson<{ departments: CatalogOption[] }>("/api/departments");
+      return departments;
+    },
+  });
+}
+
+export function useBrands(departmentSlug?: string, categorySlug?: string, onlyAvailable?: boolean) {
+  const params = new URLSearchParams();
+  if (departmentSlug) params.set("departamento", departmentSlug);
+  if (categorySlug) params.set("categoria", categorySlug);
+  if (onlyAvailable) params.set("disponivel", "1");
+  const suffix = params.toString();
+
+  return useQuery({
+    queryKey: ["brands", departmentSlug, categorySlug, onlyAvailable],
+    queryFn: async () => {
+      const { brands } = await fetchJson<{ brands: CatalogOption[] }>(`/api/brands${suffix ? `?${suffix}` : ""}`);
+      return brands;
     },
   });
 }

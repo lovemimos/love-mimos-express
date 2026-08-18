@@ -7,6 +7,7 @@ import QuantityStepper from "@/components/ui/QuantityStepper";
 import { formatBRL } from "@/utils/format";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import type { CartLineWithProduct } from "@/types";
+import { availableStock } from "@/lib/availability";
 
 export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
   const setQuantity = useCartStore((s) => s.setQuantity);
@@ -42,7 +43,7 @@ export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
           <QuantityStepper
             value={line.quantity}
             onChange={(q) => setQuantity(line.productId, q, line.variantId)}
-            max={line.product.stock}
+            max={availableStock(line.product, line.variantId)}
           />
           <span className="font-display text-sm font-semibold text-rose-500">
             {formatBRL(unitPrice * line.quantity)}
