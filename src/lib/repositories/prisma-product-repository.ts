@@ -97,7 +97,7 @@ function mapProduct(row: DbProduct): Product {
  * shared Tiny identity keeps those rows for history without ever exposing a
  * variation child as an independent storefront product.
  */
-async function catalogVisibilityWhere(): Promise<Prisma.ProductWhereInput> {
+export async function catalogVisibilityWhere(): Promise<Prisma.ProductWhereInput> {
   const variantIdentities = await prisma.productVariant.findMany({
     where: { tinyId: { not: null } },
     select: { tinyId: true },
@@ -119,6 +119,7 @@ export class PrismaProductRepository implements ProductRepository {
     const rows = await prisma.product.findMany({
       where: {
         ...visibility,
+        ...(params.productIds?.length ? { id: { in: params.productIds } } : {}),
         ...(params.departmentSlug
           ? {
               department: {

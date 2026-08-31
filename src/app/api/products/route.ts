@@ -1,5 +1,4 @@
 ﻿import { NextResponse } from "next/server";
-import { catalogService } from "@/services/catalog-service";
 import type { ProductQuery, ProductSortOrder } from "@/lib/repositories/product-query";
 import { FACET_KEYS } from "@/lib/facets/registry";
 
@@ -67,9 +66,11 @@ export async function GET(request: Request) {
     attributes: Object.keys(attributes).length > 0 ? attributes : undefined,
     priceMin: parseFloatParam(searchParams.get("precoMin")),
     priceMax: parseFloatParam(searchParams.get("precoMax")),
+    productIds: searchParams.get("ids")?.split(",").filter(Boolean).slice(0, 100),
   };
 
   try {
+    const { catalogService } = await import("@/services/catalog-service");
     const result = await catalogService.queryProducts(query);
     return NextResponse.json(result);
   } catch (err) {

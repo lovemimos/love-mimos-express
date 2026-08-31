@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const [{ prisma }, { catalogVisibilityWhere }] = await Promise.all([
+    import("@/lib/db/prisma"),
+    import("@/lib/repositories/prisma-product-repository"),
+  ]);
+  const visibility = await catalogVisibilityWhere();
   const { searchParams } = new URL(request.url);
   const departmentSlug = searchParams.get("departamento") ?? undefined;
   const categorySlug = searchParams.get("categoria") ?? undefined;
@@ -13,7 +17,7 @@ export async function GET(request: Request) {
     where: {
       products: {
         some: {
-          active: true,
+          ...visibility,
           ...(departmentSlug ? { department: { is: { slug: departmentSlug } } } : {}),
           ...(categorySlug ? { category: { is: { slug: categorySlug } } } : {}),
           ...(onlyAvailable

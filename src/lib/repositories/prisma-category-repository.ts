@@ -1,15 +1,17 @@
 ﻿import { prisma } from "@/lib/db/prisma";
 import type { Category } from "@/types";
 import type { CategoryRepository } from "@/lib/repositories/contracts";
+import { catalogVisibilityWhere } from "@/lib/repositories/prisma-product-repository";
 
 export class PrismaCategoryRepository implements CategoryRepository {
   async findAll(departmentSlug?: string): Promise<Category[]> {
+    const visibility = await catalogVisibilityWhere();
     const rows = await prisma.category.findMany({
       where: departmentSlug
         ? {
             products: {
               some: {
-                active: true,
+                ...visibility,
                 department: {
                   is: { slug: departmentSlug },
                 },
@@ -18,7 +20,7 @@ export class PrismaCategoryRepository implements CategoryRepository {
           }
         : {
             products: {
-              some: { active: true },
+              some: visibility,
             },
           },
       orderBy: { name: "asc" },

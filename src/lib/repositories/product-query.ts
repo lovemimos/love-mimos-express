@@ -20,6 +20,8 @@ export const MAX_PAGE_SIZE = 500;
  * All fields optional â€” an empty query just means "everything, page 1".
  */
 export type ProductQuery = {
+  /** Exact product IDs, used by the cart to fetch only its own lines. */
+  productIds?: string[];
   search?: string;
   categorySlug?: string;
   departmentSlug?: string;
@@ -96,6 +98,11 @@ export function normalizeProductQuery(raw: ProductQuery): Required<
 export function applyProductQuery(products: Product[], rawQuery: ProductQuery): ProductQueryResult {
   const query = normalizeProductQuery(rawQuery);
   let results = products;
+
+  if (query.productIds?.length) {
+    const ids = new Set(query.productIds);
+    results = results.filter((p) => ids.has(p.id));
+  }
 
   if (query.categorySlug) {
     results = results.filter((p) => p.categorySlug === query.categorySlug);
