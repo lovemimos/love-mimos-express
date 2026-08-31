@@ -86,10 +86,23 @@ export async function syncTinyProduct(tinyId: string): Promise<Outcome> {
     const product = existing
       ? await tx.product.update({ where: { id: existing.id }, data: { ...data, slug, lastTinySyncAt: new Date() } })
       : await tx.product.create({ data: { ...data, slug, classificationStatus: "PENDING", shortDescription: data.description?.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160) ?? data.name, lastTinySyncAt: new Date() } });
-    await tx.productImage.deleteMany({ where: { productId: product.id } });
-    if (images.length) await tx.productImage.createMany({ data: images.map((url, position) => ({ productId: product.id, url, alt: data.name, position })) });
-    await tx.productVariant.deleteMany({ where: { productId: product.id } });
-    if (variants.length) await tx.productVariant.createMany({ data: variants.map((item) => ({ ...item, productId: product.id })) });
+    await tx.productImage.deleteMany({ where: { productId: product.id, url: { notIn: images } } });
+    for (const [position, url] of images.entries()) {
+      await tx.productImage.upsert({
+        where: { productId_url: { productId: product.id, url } },
+        create: { productId: product.id, url, alt: data.name, position },
+        update: { alt: data.name, position },
+      });
+    }
+    const variantTinyIds = variants.map((item) => item.tinyId);
+    await tx.productVariant.deleteMany({ where: { productId: product.id, tinyId: { notIn: variantTinyIds } } });
+    for (const item of variants) {
+      await tx.productVariant.upsert({
+        where: { tinyId: item.tinyId },
+        create: { ...item, productId: product.id },
+        update: { ...item, productId: product.id },
+      });
+    }
   });
   if (!data.active && existing?.active) return "inactivated";
   return existing ? "updated" : "created";
@@ -124,7 +137,8 @@ async function discoverIds(mode: "full" | "incremental", limit?: number): Promis
       }
     }
   }
-  return [...new Set(ids)].slice(0, limit);
+  const uniqueIds = [...new Set(ids)];
+  return limit ? uniqueIds.slice(0, limit) : uniqueIds;
 }
 
 export async function syncTinyCatalog(options: SyncOptions) {
