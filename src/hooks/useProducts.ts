@@ -1,4 +1,4 @@
-﻿import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import type { ProductQuery, ProductQueryResult } from "@/lib/repositories/product-query";
 import type { Category } from "@/types";
 
@@ -19,7 +19,7 @@ import type { Category } from "@/types";
  */
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`Falha ao buscar ${url}: HTTP ${res.status}`);
   }
@@ -57,6 +57,10 @@ export function useProductQuery(query: ProductQuery) {
     queryKey: ["products", "query", query],
     queryFn: () => fetchJson<ProductQueryResult>(buildProductsUrl(query)),
     placeholderData: keepPreviousData,
+    staleTime: 15_000,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
 }
 
