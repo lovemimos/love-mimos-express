@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
+import { safeSyncError } from "@/lib/tiny-sync/batch-context";
 
 export const dynamic = "force-dynamic";
 // Vercel Hobby supports at most 300s with Fluid Compute.
@@ -20,11 +21,12 @@ async function execute(request: NextRequest, trigger: "manual" | "cron") {
   try {
     const { syncTinyCatalog } = await import("@/lib/tiny-sync/tiny-sync-service");
     const body = request.method === "POST" ? await request.json().catch(() => ({})) as { mode?: "full" | "incremental"; ids?: string[]; limit?: number } : {};
+    if (!body || (body.mode !== undefined && !["full", "incremental"].includes(body.mode)) || (body.ids !== undefined && (!Array.isArray(body.ids) || body.ids.length > 1000 || body.ids.some((id) => typeof id !== "string" || !/^\d+$/.test(id)))) || (body.limit !== undefined && (!Number.isInteger(body.limit) || body.limit < 1 || body.limit > 1000))) return NextResponse.json({ error: "Invalid sync options" }, { status: 400 });
     const result = await syncTinyCatalog({ trigger, mode: body.mode ?? "incremental", ids: body.ids, limit: body.limit });
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Tiny sync failed";
-    return NextResponse.json({ error: message }, { status: message === "TINY_SYNC_ALREADY_RUNNING" ? 409 : 500 });
+    return NextResponse.json({ ok: false, error: message === "TINY_SYNC_ALREADY_RUNNING" ? message : safeSyncError(error) }, { status: message === "TINY_SYNC_ALREADY_RUNNING" ? 409 : 500 });
   }
 }
 

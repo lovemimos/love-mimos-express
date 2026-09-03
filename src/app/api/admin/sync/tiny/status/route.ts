@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { readProgress } from "@/lib/tiny-sync/batch-context";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +19,21 @@ export async function GET() {
       unchanged: true,
       inactivated: true,
       errors: true,
+      id: true,
+      errorSummary: true,
     },
   });
 
-  return NextResponse.json({ ok: true, latest });
+  const checkpoint = await prisma.tinySyncRun.findFirst({ where: { status: "SUCCESS", mode: { in: ["full", "incremental"] } }, orderBy: { finishedAt: "desc" }, select: { startedAt: true } });
+  if (!latest) return NextResponse.json({ ok: true, latest: null, lastTinySyncAt: checkpoint?.startedAt ?? null });
+  const { errorSummary, ...publicRun } = latest;
+  const progress = readProgress(errorSummary);
+  return NextResponse.json({ ok: true, lastTinySyncAt: checkpoint?.startedAt ?? null, latest: {
+    ...publicRun,
+    updatedAt: progress?.updatedAt ?? latest.finishedAt ?? latest.startedAt,
+    processedThisBatch: progress?.processedThisBatch ?? 0,
+    hasMore: progress?.hasMore ?? ["RUNNING", "PARTIAL"].includes(latest.status),
+    cursor: progress ? { position: progress.cursor, total: progress.ids?.length ?? null, page: progress.page, tinyId: progress.ids?.[progress.cursor] ?? null } : null,
+    lastTinySyncAt: checkpoint?.startedAt ?? null,
+  } }, { headers: { "Cache-Control": "no-store" } });
 }
