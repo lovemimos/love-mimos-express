@@ -1,0 +1,38 @@
+name: Tiny catalog sync
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tiny-catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Trigger incremental Tiny sync
+        env:
+          TINY_SYNC_SECRET: ${{ secrets.TINY_SYNC_SECRET }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          http_code="$(curl --silent --show-error \
+            --retry 2 --retry-all-errors --retry-delay 15 \
+            --connect-timeout 20 --max-time 360 \
+            --output "$response_file" --write-out '%{http_code}' \
+            --request POST \
+            --header "Authorization: Bearer $TINY_SYNC_SECRET" \
+            --header "x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET" \
+            --header "Content-Type: application/json" \
+            --data '{"mode":"incremental"}' \
+            https://love-mimos-express-sabg.vercel.app/api/admin/sync/tiny)"
+          test "$http_code" -ge 200 -a "$http_code" -lt 300
+          node -e 'const fs=require("fs"); const r=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); if(!r.runId || Number(r.errors||0)>0) process.exit(1); console.log("Tiny sync completed: processed="+r.processed+", created="+r.created+", updated="+r.updated+", unchanged="+r.unchanged+", inactivated="+r.inactivated)' "$response_file"
