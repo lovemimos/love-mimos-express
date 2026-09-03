@@ -23,8 +23,23 @@ snapshot tornam essa repetição idempotente.
 `lastTinySyncAt` só avança na transação final SUCCESS, usando o INÍCIO do ciclo
 como checkpoint conservador. Não altera `Product.updatedAt` nos produtos iguais.
 Execuções direcionadas por IDs/limit não avançam o checkpoint global.
-A API Tiny v2 filtra por data, não por segundo; alterações do mesmo dia podem
-reaparecer. Essa sobreposição é intencional para não perder mudanças.
+O checkpoint global usa o maior início concluído, não a conclusão mais recente:
+recuperar um ciclo antigo nunca faz o checkpoint retroceder. Timestamps individuais
+também usam GREATEST. Erros históricos resolvidos ficam em `historicalErrors`.
+
+A busca `produtos.pesquisa.php` NÃO suporta `dataAlteracao`. O incremental usa
+`lista.atualizacoes.produtos` e `lista.atualizacoes.estoque`, com data e hora em
+America/Sao_Paulo. Esses feeds exigem a extensão Tiny de estoque em tempo real e
+consomem os registros retornados. Cada resposta é salva antes da próxima leitura;
+sequências distintas drenam a página 1 sem pular registros removidos da fila.
+Mudanças de filhos são encaminhadas ao produto pai, nunca criam Products filhos.
+Não compartilhe esses feeds com outro consumidor sem coordenação.
+
+Não existe transação distribuída entre Tiny e PostgreSQL: perda de conexão após
+consumo e antes da persistência pode exigir reconciliação. O cron diário solicita
+modo full como fallback, sem aumentar sua frequência; schedules seguintes retomam
+essa reconciliação em lotes. O endpoint de status mostra a pendência mais antiga,
+que é a execução efetivamente retomada pelo POST.
 
 Erros de identidade/API por produto são registrados e reprocessados em PARTIAL;
 falhas de infraestrutura interrompem em ERROR, preservando cursor. Um próximo POST

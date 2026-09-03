@@ -66,6 +66,25 @@ async function main() {
   context.batchContext.run({ deadline: Date.now() + 20000, progress: {}, save: async () => {} }, () => assert.throws(() => context.checkBudget(30000), context.BatchPause));
   assert.equal(context.safeSyncError(new Error('secret=do-not-output')), 'SYNC_OPERATION_FAILED');
   console.log('PASS: deadline reserve and sanitized errors');
+  const feeds = [];
+  const service = load('src/lib/tiny-sync/tiny-sync-service.ts', {
+    '@/../generated/prisma/client': { Prisma: {} },
+    '@/lib/db/prisma': { prisma: {
+      productVariant: { findUnique: async ({where}) => where.tinyId === 'child' ? {product:{tinyId:'parent'}} : null, findMany: async()=>[] },
+      product: { findMany: async()=>[], count: async()=>0 },
+    } },
+    '@/lib/repositories/tiny/tiny-v2-image-scanner': {}, '@/utils/slugify': {},
+    './batch-context': context, './resumable-sync': {},
+    './tiny-v2-client': {
+      listTinyProducts: async()=>{ throw new Error('Unexpected full scan'); },
+      getTinyProduct: async()=>({idProdutoPai:'new-parent'}),
+      listTinyChanges: async(kind,since,sequence)=>{ feeds.push(kind); return sequence > 1 ? [] : [{id:'child',tipo_variacao:'V'},{id:'new-child',tipo_variacao:'V'},{id:'simple'}]; },
+    },
+  });
+  const discovered = await context.batchContext.run({deadline:Date.now()+200000,progress:{changedSince:'2026-09-03T00:00:00Z'},save:async()=>{}},()=>service.discoverIds('incremental'));
+  assert.deepEqual(discovered,['parent','new-parent','simple']);
+  assert.deepEqual(feeds,['produtos','produtos','estoque','estoque']);
+  console.log('PASS: both change feeds, known/new variant parent mapping, deduplication and no full rescan');
   const client = load('src/lib/tiny-sync/tiny-v2-client.ts', { './batch-context': context });
   const originalFetch = global.fetch;
   const originalToken = process.env.TINY_API_TOKEN;
