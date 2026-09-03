@@ -77,6 +77,19 @@ async function main() {
     await context.batchContext.run({ deadline: Date.now() + 200000, progress, save: async () => {} }, () => client.getTinyProduct('123'));
     await context.batchContext.run({ deadline: 0, progress, save: async () => {} }, () => client.getTinyProduct('123'));
     assert.equal(requests, 1);
+    await assert.rejects(client.listTinyProducts(1, new Date()), /change feeds/);
+    const changeRequests = [];
+    global.fetch = async (url, options) => {
+      changeRequests.push({ url, fields: Object.fromEntries(options.body) });
+      return new Response(JSON.stringify({ retorno: { status: 'OK', produtos: [{ produto: { id: '123' } }] } }));
+    };
+    const since = new Date('2026-09-03T15:20:30Z');
+    const runChanges = (sequence) => context.batchContext.run({ deadline: Date.now()+200000, progress, save: async()=>{} }, () => client.listTinyChanges('produtos', since, sequence));
+    await runChanges(1); await runChanges(1); await runChanges(2);
+    assert.equal(changeRequests.length, 2);
+    assert.ok(changeRequests.every(r => r.url.endsWith('/lista.atualizacoes.produtos') && r.fields.pagina === '1'));
+    assert.equal(changeRequests[0].fields.dataAlteracao, '03/09/2026 12:20:30');
+    console.log('PASS: real incremental endpoint, timestamp, durable sequence replay and queue page one');
     global.fetch = async () => new Response('', { status: 429, headers: { 'retry-after': '400' } });
     await assert.rejects(context.batchContext.run({ deadline: Date.now() + 200000, progress, save: async () => {} }, () => client.getTinyProduct('456')), context.BatchPause);
     assert.ok(progress.nextRequestAt > Date.now() + 390000);

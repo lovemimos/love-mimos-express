@@ -9,9 +9,9 @@ let requestQueue = Promise.resolve();
 type TinyEnvelope = { retorno?: { status?: string; codigo_erro?: number | string; erros?: { erro?: string }[]; produto?: TinyV2ProductPayload; produtos?: { produto?: TinyV2ProductPayload }[]; numero_paginas?: number } };
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function throttledRequest(endpoint: string, fields: Record<string, string>): Promise<TinyEnvelope> {
+async function throttledRequest(endpoint: string, fields: Record<string, string>, sequence?: number): Promise<TinyEnvelope> {
   const context = batchContext.getStore();
-  const key = JSON.stringify([endpoint, fields]);
+  const key = JSON.stringify(sequence === undefined ? [endpoint, fields] : [endpoint, fields, sequence]);
   if (context && key in context.progress.responses) return context.progress.responses[key] as TinyEnvelope;
   const token = process.env.TINY_API_TOKEN?.trim();
   if (!token) throw new Error("TINY_API_TOKEN is not configured");
@@ -65,10 +65,17 @@ async function throttledRequest(endpoint: string, fields: Record<string, string>
 }
 
 export async function listTinyProducts(page: number, changedSince?: Date) {
+  if (changedSince) throw new Error("Use the Tiny change feeds for incremental discovery");
   const fields: Record<string, string> = { pagina: String(page) };
-  if (changedSince) fields.dataAlteracao = changedSince.toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
   const json = await throttledRequest("produtos.pesquisa.php", fields);
   return { products: (json.retorno?.produtos ?? []).map((item) => item.produto).filter(Boolean) as TinyV2ProductPayload[], pages: Number(json.retorno?.numero_paginas || 0), end: Number(json.retorno?.codigo_erro) === 20 };
+}
+export async function listTinyChanges(kind: "produtos" | "estoque", changedSince: Date, sequence: number) {
+  const date = changedSince.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", hour12: false }).replace(",", "");
+  // These feeds consume returned records. Drain page one, caching every response
+  // under a distinct durable sequence before asking for the next page.
+  const json = await throttledRequest(`lista.atualizacoes.${kind}`, { dataAlteracao: date, pagina: "1" }, sequence);
+  return (json.retorno?.produtos ?? []).map((item) => item.produto).filter(Boolean) as TinyV2ProductPayload[];
 }
 export async function getTinyProduct(id: string): Promise<TinyV2ProductPayload | null> {
   const json = await throttledRequest("produto.obter.php", { id });

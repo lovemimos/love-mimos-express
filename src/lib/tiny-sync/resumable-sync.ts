@@ -19,7 +19,7 @@ export async function syncTinyCatalog(options: SyncOptions) {
       const heartbeat = readProgress(run.errorSummary)?.updatedAt ?? run.startedAt.toISOString();
       if (Date.now() - Date.parse(heartbeat) < 600_000) throw new Error("TINY_SYNC_ALREADY_RUNNING");
     }
-    const last = await prisma.tinySyncRun.findFirst({ where: { status: "SUCCESS", mode: { in: ["full", "incremental"] } }, orderBy: { finishedAt: "desc" } });
+    const last = await prisma.tinySyncRun.findFirst({ where: { status: "SUCCESS", mode: { in: ["full", "incremental"] } }, orderBy: { startedAt: "desc" } });
     const lastState = readProgress(last?.errorSummary);
     if (!run) run = await prisma.tinySyncRun.create({ data: { trigger: options.trigger, mode: options.ids?.length || options.limit ? "targeted" : options.mode ?? "incremental", status: "RUNNING" } });
     runId = run.id;
@@ -86,13 +86,15 @@ export async function syncTinyCatalog(options: SyncOptions) {
           await save("PARTIAL");
         } else {
           checkBudget();
+          state.historicalErrors = Math.max(state.historicalErrors ?? 0, counters.errors);
+          counters.errors = 0;
           state.hasMore = false;
           state.updatedAt = new Date().toISOString();
           await prisma.$transaction(async (tx) => {
             const lock = await tx.tinySyncLock.updateMany({ where: { id: "catalog", token }, data: { lockedAt: new Date() } });
             if (lock.count !== 1) throw new Error("TINY_SYNC_LOCK_LOST");
             // Explicit SQL avoids Prisma @updatedAt churn on unchanged products.
-            if (state.completed.length) await tx.$executeRaw(Prisma.sql`UPDATE "Product" SET "lastTinySyncAt" = ${run!.startedAt} WHERE "tinyId" IN (${Prisma.join(state.completed)})`);
+            if (state.completed.length) await tx.$executeRaw(Prisma.sql`UPDATE "Product" SET "lastTinySyncAt" = GREATEST("lastTinySyncAt", ${run!.startedAt}) WHERE "tinyId" IN (${Prisma.join(state.completed)})`);
             await tx.tinySyncRun.update({ where: { id: run!.id }, data: { ...counters, status: "SUCCESS", finishedAt: new Date(), errorSummary: JSON.parse(JSON.stringify(state)) as Prisma.InputJsonValue } });
           });
         }

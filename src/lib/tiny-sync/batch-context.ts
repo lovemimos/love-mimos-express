@@ -14,6 +14,7 @@ export type Progress = {
   completed: string[]; failures: { tinyId: string; error: string }[];
   failureHistory?: { tinyId: string; error: string }[];
   limit?: number;
+  historicalErrors?: number;
 };
 export type BatchContext = { deadline: number; progress: Progress; save: () => Promise<void> };
 export const batchContext = new AsyncLocalStorage<BatchContext>();

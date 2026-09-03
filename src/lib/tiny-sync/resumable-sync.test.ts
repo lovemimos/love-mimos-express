@@ -48,5 +48,6 @@ describe("durable batch orchestration", () => {
     mocks.find.mockResolvedValueOnce(null).mockResolvedValueOnce(last);
     mocks.discover.mockImplementation(async () => { expect(batchContext.getStore()?.progress.changedSince).toBe(last.startedAt.toISOString()); return []; });
     expect((await syncTinyCatalog({ trigger: "manual" })).status).toBe("SUCCESS");
+    expect(mocks.find).toHaveBeenNthCalledWith(2, expect.objectContaining({ orderBy: { startedAt: "desc" } }));
   });
 });

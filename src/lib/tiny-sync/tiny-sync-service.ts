@@ -4,7 +4,7 @@ import { Prisma } from "@/../generated/prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { extractUsableImageUrls } from "@/lib/repositories/tiny/tiny-v2-image-scanner";
 import type { TinyV2ProductPayload } from "@/lib/repositories/tiny/tiny-v2-mapper";
-import { getTinyProduct, getTinyStock, listTinyProducts } from "./tiny-v2-client";
+import { getTinyProduct, getTinyStock, listTinyProducts, listTinyChanges } from "./tiny-v2-client";
 import { slugify } from "@/utils/slugify";
 import { batchContext, checkBudget } from "./batch-context";
 
@@ -114,9 +114,28 @@ export async function syncTinyProduct(tinyId: string): Promise<Outcome> {
 export async function discoverIds(mode: "full" | "incremental", limit?: number): Promise<string[]> {
   const ids: string[] = [];
   const context = batchContext.getStore();
-  const changedSince = mode === "incremental" && context?.progress.changedSince ? new Date(context.progress.changedSince) : undefined;
-  for (let page = 1; ; page += 1) {
-    const result = await listTinyProducts(page, changedSince);
+  const changedSince = mode === "incremental" && !limit && context?.progress.changedSince ? new Date(context.progress.changedSince) : undefined;
+  if (changedSince) {
+    for (const kind of ["produtos", "estoque"] as const) {
+      for (let sequence = 1; ; sequence++) {
+        const changes = await listTinyChanges(kind, changedSince, sequence);
+        for (const product of changes) {
+          if (!product.id) continue;
+          const id = String(product.id);
+          const variant = await prisma.productVariant.findUnique({ where: { tinyId: id }, select: { product: { select: { tinyId: true } } } });
+          if (variant) { ids.push(variant.product.tinyId); continue; }
+          if (product.tipoVariacao === "V" || product.tipo_variacao === "V") {
+            const detail = await getTinyProduct(id);
+            const parent = detail && (detail as unknown as Record<string, unknown>).idProdutoPai;
+            if (!parent) throw new Error("Tiny variant parent unavailable");
+            ids.push(String(parent));
+          } else ids.push(id);
+        }
+        if (!changes.length) break;
+      }
+    }
+  } else for (let page = 1; ; page += 1) {
+    const result = await listTinyProducts(page);
     if (context) { context.progress.page = page; await context.save(); }
     for (const product of result.products) {
       if (product.id && product.tipoVariacao !== "V") ids.push(String(product.id));
