@@ -1,4 +1,4 @@
-﻿import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import type { ProductQuery, ProductQueryResult } from "@/lib/repositories/product-query";
 import type { Category } from "@/types";
 
@@ -19,7 +19,7 @@ import type { Category } from "@/types";
  */
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`Falha ao buscar ${url}: HTTP ${res.status}`);
   }
@@ -28,6 +28,7 @@ async function fetchJson<T>(url: string): Promise<T> {
 
 function buildProductsUrl(query: ProductQuery): string {
   const params = new URLSearchParams();
+  if (query.productIds?.length) params.set("ids", query.productIds.join(","));
   if (query.search) params.set("q", query.search);
   if (query.categorySlug) params.set("categoria", query.categorySlug);
   if (query.departmentSlug) params.set("departamento", query.departmentSlug);
@@ -56,7 +57,12 @@ export function useProductQuery(query: ProductQuery) {
   return useQuery({
     queryKey: ["products", "query", query],
     queryFn: () => fetchJson<ProductQueryResult>(buildProductsUrl(query)),
+    enabled: query.productIds === undefined || query.productIds.length > 0,
     placeholderData: keepPreviousData,
+    staleTime: 15_000,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
   });
 }
 

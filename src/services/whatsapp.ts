@@ -36,7 +36,7 @@ export function buildWhatsAppOrderMessage(
         line.product.price + (line.variant?.priceModifier ?? 0);
       return `• ${line.quantity}x ${line.product.name}${variantLabel} — ${formatBRL(
         unitPrice
-      )} un.`;
+      )} un. — Subtotal: ${formatBRL(line.lineTotal)}`;
     })
     .join("\n");
 

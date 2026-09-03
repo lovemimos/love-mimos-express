@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
-import { syncTinyCatalog } from "@/lib/tiny-sync/tiny-sync-service";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 800;
+// Vercel Hobby supports at most 300s with Fluid Compute.
+export const maxDuration = 300;
 
-function authorized(request: NextRequest) {
-  const expected = process.env.TINY_SYNC_SECRET || process.env.CRON_SECRET;
+function authorized(request: NextRequest, trigger: "manual" | "cron") {
+  const expected = trigger === "manual"
+    ? process.env.TINY_SYNC_SECRET
+    : process.env.CRON_SECRET;
   const supplied = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") || request.headers.get("x-tiny-sync-secret");
   if (!expected || !supplied) return false;
   const a = Buffer.from(expected); const b = Buffer.from(supplied);
@@ -14,8 +16,9 @@ function authorized(request: NextRequest) {
 }
 
 async function execute(request: NextRequest, trigger: "manual" | "cron") {
-  if (!authorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!authorized(request, trigger)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
+    const { syncTinyCatalog } = await import("@/lib/tiny-sync/tiny-sync-service");
     const body = request.method === "POST" ? await request.json().catch(() => ({})) as { mode?: "full" | "incremental"; ids?: string[]; limit?: number } : {};
     const result = await syncTinyCatalog({ trigger, mode: body.mode ?? "incremental", ids: body.ids, limit: body.limit });
     return NextResponse.json(result);

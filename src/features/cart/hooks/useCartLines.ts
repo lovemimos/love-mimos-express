@@ -3,10 +3,6 @@ import { useCartStore } from "@/features/cart/store/cart-store";
 import { useProductQuery } from "@/hooks/useProducts";
 import { buildCart } from "@/services/cart-service";
 
-// Cart resolution needs the whole catalog to match against (a cart line
-// could reference any product), not one filtered/paginated slice.
-const FULL_CATALOG_PAGE_SIZE = 100;
-
 /**
  * Thin composition hook: reads raw lines from the cart store, reads the
  * catalog through the same `useProductQuery` hook every other screen
@@ -16,7 +12,8 @@ const FULL_CATALOG_PAGE_SIZE = 100;
  */
 export function useCartLines() {
   const lines = useCartStore((state) => state.lines);
-  const { data } = useProductQuery({ pageSize: FULL_CATALOG_PAGE_SIZE });
+  const productIds = useMemo(() => [...new Set(lines.map((line) => line.productId))], [lines]);
+  const { data } = useProductQuery({ productIds, pageSize: Math.max(productIds.length, 1) });
 
   return useMemo(() => buildCart(lines, data?.items ?? []), [lines, data]);
 }

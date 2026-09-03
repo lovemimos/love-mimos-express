@@ -33,7 +33,15 @@ async function throttledRequest(endpoint: string, fields: Record<string, string>
           cache: "no-store",
           signal: AbortSignal.timeout(Number(process.env.TINY_REQUEST_TIMEOUT_MS || 20_000)),
         });
-        if (!response.ok) throw new Error(`Tiny HTTP ${response.status}`);
+        if (!response.ok) {
+          const retryAfter = response.headers.get("retry-after");
+          const error = new Error(`Tiny HTTP ${response.status}`) as Error & { retryAfterMs?: number };
+          if (response.status === 429) {
+            const seconds = Number(retryAfter);
+            error.retryAfterMs = Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 65_000;
+          }
+          throw error;
+        }
         const json = (await response.json()) as TinyEnvelope;
         if (json.retorno?.status === "Erro") {
           const code = Number(json.retorno.codigo_erro);
@@ -45,7 +53,8 @@ async function throttledRequest(endpoint: string, fields: Record<string, string>
         lastError = error;
         if (attempt < 4) {
           const message = error instanceof Error ? error.message : "";
-          const delay = /API Bloqueada|número de acessos/i.test(message) ? 65_000 : 500 * 2 ** (attempt - 1);
+          const retryAfterMs = (error as Error & { retryAfterMs?: number })?.retryAfterMs;
+          const delay = retryAfterMs ?? (/API Bloqueada|número de acessos|HTTP 429/i.test(message) ? 65_000 : 500 * 2 ** (attempt - 1));
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }

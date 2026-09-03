@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const [{ prisma }, { catalogVisibilityWhere }] = await Promise.all([
+    import("@/lib/db/prisma"),
+    import("@/lib/repositories/prisma-product-repository"),
+  ]);
+  const visibility = await catalogVisibilityWhere();
   const departments = await prisma.department.findMany({
-    where: { products: { some: { active: true } } },
+    where: { products: { some: visibility } },
     orderBy: { name: "asc" },
     select: { id: true, name: true, slug: true },
   });

@@ -1,12 +1,11 @@
 ﻿import { NextResponse } from "next/server";
-import { PrismaCategoryRepository } from "@/lib/repositories/prisma-category-repository";
 
 export const dynamic = "force-dynamic";
 
-const categoryRepository = new PrismaCategoryRepository();
-
 export async function GET(request: Request) {
   try {
+    const { PrismaCategoryRepository } = await import("@/lib/repositories/prisma-category-repository");
+    const categoryRepository = new PrismaCategoryRepository();
     const { searchParams } = new URL(request.url);
     const departmentSlug =
       searchParams.get("departamento") ?? undefined;
