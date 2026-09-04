@@ -29,7 +29,9 @@ export async function GET(request: Request) {
       ? product.variants.filter((variant) => variant.stock > 0 && variant.tinyId).map((variant) => ({ kind: "variant-sample", productId: product.id, productName: product.name, id: variant.id, name: variant.name, tinyId: variant.tinyId!, siteStock: variant.stock }))
       : product.stock > 0 ? [{ kind: "product-sample", productId: product.id, productName: product.name, id: product.id, name: product.name, tinyId: product.tinyId, siteStock: product.stock }] : []).slice(0, 10);
     const targets = [...zero, ...positiveSample];
-    const slice = targets.slice(offset, offset + 15);
+    // Eight calls stay below the 20s browser/navigation budget while the
+    // shared Tiny client still enforces ~30 requests/minute.
+    const slice = targets.slice(offset, offset + 8);
     const items = [];
     for (const target of slice) {
       try { items.push({ ...target, tinyStock: await getTinyStock(target.tinyId), error: null }); }
