@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Header from "@/components/layout/Header";
 import SearchPageContent from "@/features/product/components/SearchPageContent";
+export const metadata = { title: "Catálogo", description: "Encontre materiais por categoria, departamento e marca. Consulte preços e disponibilidade na Love Mimos Express." };
 
 /**
  * `useSearchParams()` (used inside `SearchPageContent` to make the URL
@@ -16,7 +17,7 @@ import SearchPageContent from "@/features/product/components/SearchPageContent";
 export default function SearchPage() {
   return (
     <div>
-      <Header />
+      <Header showSearch={false} />
       <Suspense fallback={null}>
         <SearchPageContent />
       </Suspense>

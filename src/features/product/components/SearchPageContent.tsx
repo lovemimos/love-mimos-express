@@ -15,11 +15,11 @@ import type { Product } from "@/types";
 // Deliberately smaller than Home's page size — this is what makes
 // "carregar mais" demonstrable even against today's small mock catalog,
 // and is the page size a real (larger) Tiny catalog would actually use.
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 12;
 // Only the URL write (and therefore the network refetch) is debounced —
 // the input's visible value is never delayed. See SearchBar/task 8.
 const SEARCH_SYNC_DEBOUNCE_MS = 400;
-const DEFAULT_DEPARTMENT = "lash-designer";
+const DEFAULT_DEPARTMENT = "";
 
 function readSort(raw: string | null): ProductSortOrder {
   if (raw === "menor-preco" || raw === "maior-preco" || raw === "nome-asc" || raw === "relevancia") {
@@ -57,6 +57,7 @@ export default function SearchPageContent() {
   const [page, setPage] = useState(1);
   const [accumulated, setAccumulated] = useState<Product[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current); }, []);
 
   // Back/forward navigation or a shared link can change the URL out from
   // under us — keep the visible input in sync with it.
@@ -135,7 +136,7 @@ export default function SearchPageContent() {
     router.replace(`/busca?departamento=${DEFAULT_DEPARTMENT}`, { scroll: false });
   }
 
-  const { data, isLoading, isError, isFetching, refetch } = useProductQuery({
+  const { data, isLoading, isError, isFetching, isPlaceholderData, refetch } = useProductQuery({
     search: urlQuery || undefined,
     categorySlug: activeCategory || undefined,
     departmentSlug: department,
@@ -152,13 +153,14 @@ export default function SearchPageContent() {
   // A new filter combination always replaces the visible list; only
   // incrementing the page (via "Carregar mais") appends to it.
   useEffect(() => {
+    setPage(1);
     setAccumulated([]);
   }, [urlQuery, department, activeCategory, brand, onlyAvailable, sort]);
 
   useEffect(() => {
-    if (!data) return;
-    setAccumulated((prev) => (page === 1 ? data.items : [...prev, ...data.items]));
-  }, [data, page]);
+    if (!data || isPlaceholderData) return;
+    setAccumulated((prev) => page === 1 ? data.items : Array.from(new Map([...prev, ...data.items].map((item) => [item.id, item])).values()));
+  }, [data, page, isPlaceholderData]);
 
   const categoryName = activeCategory
     ? categories.find((c) => c.slug === activeCategory)?.name

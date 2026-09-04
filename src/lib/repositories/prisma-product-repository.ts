@@ -83,6 +83,7 @@ function mapProduct(row: DbProduct): Product {
       : undefined,
     categorySlug: row.category?.slug ?? "sem-categoria",
     brandSlug: row.brand?.slug ?? undefined,
+    brandName: row.brand?.name ?? undefined,
     images: row.images
       .slice()
       .sort((a, b) => a.position - b.position)

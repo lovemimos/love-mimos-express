@@ -19,6 +19,17 @@ body {
   overscroll-behavior-y: none;
 }
 
+.store-shell { min-width: 0; padding-bottom: 64px; }
+.store-shell main { min-width: 0; }
+.premium-hero { position: relative; overflow: hidden; margin: 20px 16px 0; padding: 36px 24px; border-radius: 28px; background: #fbe9ef; }
+.hero-signature { display: none; }
+@media (min-width: 768px) {
+  .premium-hero { padding: 64px 48px; }
+  .hero-signature { display: flex; position: absolute; right: 4%; top: 22%; flex-direction: column; transform: rotate(-12deg); color: #c6376b; opacity: .12; font-family: var(--font-fraunces); }
+  .hero-signature span:first-child { font-size: 160px; font-style: italic; line-height: 1; }
+  .hero-signature span:last-child { font-size: 32px; }
+}
+
 ::-webkit-scrollbar {
   display: none;
 }

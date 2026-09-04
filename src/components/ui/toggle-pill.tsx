@@ -26,8 +26,9 @@ export default function TogglePill({
       type="button"
       onClick={onClick}
       disabled={disabled}
+      aria-pressed={active}
       className={cn(
-        "flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition active:scale-95",
+        "flex min-h-11 max-w-full shrink-0 items-center justify-center gap-2 whitespace-normal break-words rounded-full border px-4 py-2 text-xs font-semibold transition active:scale-95 [overflow-wrap:anywhere]",
         active
           ? "border-plum bg-plum text-white shadow-lift"
           : "border-rose-100 bg-neutral-0 text-ink/70",

@@ -98,6 +98,7 @@ export type Product = {
   // Marca — referência para a entidade `Brand` (src/lib/data/brands.ts).
   // Opcional: nem todo produto tem marca conhecida.
   brandSlug?: string;
+  brandName?: string;
 
   /**
    * Facetas de navegação abertas e extensíveis — linha, técnica,
