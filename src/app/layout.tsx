@@ -4,6 +4,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import Footer from "@/components/layout/Footer";
 import { BrandSplash } from "@/components/brand/BrandSplash";
 import { QueryProvider } from "@/app/providers";
+import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 
 export const metadata: Metadata = {
   // TODO: trocar pelo domínio real antes do lançamento — sem isso, os
@@ -65,6 +66,7 @@ export default function RootLayout({
           <div className="store-shell mx-auto flex min-h-dvh w-full max-w-7xl flex-col bg-white">
             <main className="flex-1 pb-24">{children}</main>
             <Footer />
+            <FloatingWhatsApp />
             <BottomNav />
           </div>
         </QueryProvider>

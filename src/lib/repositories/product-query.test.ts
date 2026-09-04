@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { applyProductQuery, normalizeProductQuery } from "./product-query";
 import type { Product } from "@/types";
+import { normalizeSearchText } from "@/utils/normalize-text";
 
 function product(overrides: Partial<Product>): Product {
   return {
@@ -158,9 +159,17 @@ describe("applyProductQuery — busca textual", () => {
     expect(result.total).toBe(0);
   });
 
-  it("busca por SKU também funciona (campo real do modelo)", () => {
+  it("não usa SKU isolado como atalho de busca comercial", () => {
     const result = applyProductQuery(catalog, { search: "CIL-MAR-01" });
-    expect(result.items.map((p) => p.id)).toContain("1");
+    expect(result.items).toHaveLength(0);
+  });
+
+  it.each(["cola", "cílios", "removedor"])("busca comercial %s retorna somente conteúdo relevante", (term) => {
+    const result = applyProductQuery(catalog, { search: term, pageSize: 20 });
+    expect(result.items.length).toBeGreaterThan(0);
+    for (const item of result.items) {
+      expect(normalizeSearchText(`${item.name} ${item.brandName ?? ""} ${item.categorySlug} ${item.shortDescription} ${item.description}`)).toContain(normalizeSearchText(term));
+    }
   });
 });
 
@@ -241,6 +250,17 @@ describe("applyProductQuery — filtros adicionais", () => {
     const result = applyProductQuery(catalog, { onlyAvailable: true, pageSize: 10 });
     expect(result.items.every((p) => p.stock > 0)).toBe(true);
     expect(result.items.map((p) => p.id)).not.toContain("4");
+  });
+
+  it("combina departamento, categoria, tipo, preço e disponibilidade com AND", () => {
+    const item = product({ id: "and", departmentSlug: "lash-designer", categorySlug: "cilios", productType: "com-variacoes", price: 0, stock: 1, variants: [{ id: "v", label: "11mm", priceModifier: 35, stock: 1 }] });
+    const result = applyProductQuery([item, ...catalog], { departmentSlug: "lash-designer", categorySlug: "cilios", productType: "com-variacoes", availability: "available", priceMin: 30, priceMax: 40, pageSize: 10 });
+    expect(result.items.map((product) => product.id)).toEqual(["and"]);
+  });
+
+  it("availability=sold-out retorna apenas esgotados", () => {
+    const result = applyProductQuery(catalog, { availability: "sold-out", pageSize: 10 });
+    expect(result.items.map((item) => item.id)).toEqual(["4"]);
   });
 
   it("featuredOnly retorna só produtos com badge", () => {

@@ -7,6 +7,7 @@ import {
   type ProductQuery,
   type ProductQueryResult,
 } from "@/lib/repositories/product-query";
+import { classifyCatalogProduct } from "@/lib/catalog/automatic-classification";
 
 const productInclude = {
   category: true,
@@ -65,6 +66,17 @@ function mapVariant(
 
 function mapProduct(row: DbProduct): Product {
   const price = Number(row.price);
+  const originalCategorySlug = row.category?.slug ?? "sem-categoria";
+  const classification = classifyCatalogProduct({
+    tinyId: row.tinyId,
+    name: row.name,
+    shortDescription: row.shortDescription ?? undefined,
+    description: row.description ?? undefined,
+    categorySlug: originalCategorySlug,
+    brandSlug: row.brand?.slug ?? undefined,
+    brandName: row.brand?.name ?? undefined,
+    variantCount: row.variants.length,
+  });
 
   return {
     id: row.id,
@@ -81,9 +93,15 @@ function mapProduct(row: DbProduct): Product {
     externalRef: row.tinyId
       ? { source: "tiny", id: row.tinyId }
       : undefined,
-    categorySlug: row.category?.slug ?? "sem-categoria",
-    brandSlug: row.brand?.slug ?? undefined,
-    brandName: row.brand?.name ?? undefined,
+    categorySlug: classification.categorySlug,
+    originalCategorySlug,
+    departmentSlug: row.department?.slug ?? undefined,
+    productType: classification.productType,
+    classificationConfidence: classification.confidence,
+    classificationSource: classification.source,
+    brandSlug: classification.brandSlug,
+    brandName: classification.brandName,
+    originalBrandSlug: row.brand?.slug ?? undefined,
     images: row.images
       .slice()
       .sort((a, b) => a.position - b.position)
@@ -121,13 +139,8 @@ export class PrismaProductRepository implements ProductRepository {
       where: {
         ...visibility,
         ...(params.productIds?.length ? { id: { in: params.productIds } } : {}),
-        ...(params.departmentSlug
-          ? {
-              department: {
-                is: { slug: params.departmentSlug },
-              },
-            }
-          : {}),
+        // Department filtering is applied by the shared query engine after
+        // mapping, alongside the other structured filters.
       },
       include: productInclude,
       orderBy: { name: "asc" },

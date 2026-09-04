@@ -94,11 +94,17 @@ export type Product = {
   // para categorySlug + attributes na camada de importação daquela
   // fonte, nunca representada aqui.
   categorySlug: string;
+  originalCategorySlug?: string;
+  departmentSlug?: string;
+  productType?: "simples" | "com-variacoes";
+  classificationConfidence?: "high" | "medium" | "low";
+  classificationSource?: "manual" | "automatic" | "existing";
 
   // Marca — referência para a entidade `Brand` (src/lib/data/brands.ts).
   // Opcional: nem todo produto tem marca conhecida.
   brandSlug?: string;
   brandName?: string;
+  originalBrandSlug?: string;
 
   /**
    * Facetas de navegação abertas e extensíveis — linha, técnica,

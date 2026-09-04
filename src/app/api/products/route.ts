@@ -54,6 +54,16 @@ export async function GET(request: Request) {
     categorySlug: searchParams.get("categoria") ?? undefined,
     departmentSlug: searchParams.get("departamento") ?? undefined,
     brandSlug: searchParams.get("marca") ?? undefined,
+    productType:
+      searchParams.get("tipo") === "simples" || searchParams.get("tipo") === "com-variacoes"
+        ? (searchParams.get("tipo") as ProductQuery["productType"])
+        : undefined,
+    availability:
+      searchParams.get("estoque") === "sold-out" || searchParams.get("estoque") === "all"
+        ? (searchParams.get("estoque") as ProductQuery["availability"])
+        : searchParams.get("estoque") === "available" || searchParams.get("disponivel") === "1"
+          ? "available"
+          : undefined,
     sort: sortParam && (SORT_PARAM_VALUES as string[]).includes(sortParam) ? (sortParam as ProductSortOrder) : undefined,
     page: parseIntParam(searchParams.get("pagina")),
     pageSize: parseIntParam(searchParams.get("limite")),

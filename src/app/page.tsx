@@ -20,7 +20,6 @@ export default function HomePage() {
           <Link href="/busca" className="mt-7 inline-flex min-h-12 items-center gap-4 rounded-full bg-ink px-7 py-3 text-sm font-semibold text-white transition hover:bg-rose-600">Explorar o catálogo <ArrowRight size={18} /></Link>
           <p className="mt-4 text-xs text-ink/60">Sem cadastro. Atendimento na conversa.</p>
         </div>
-        <div aria-hidden="true" className="hero-signature"><span>love</span><span>every detail.</span></div>
       </section>
       <div className="grid gap-4 border-b border-rose-100 px-5 py-6 sm:grid-cols-3 lg:px-10">
         {[{ icon: Heart, title: "Seu universo beauty", text: "Materiais para a sua rotina profissional" }, { icon: PackageCheck, title: "Escolha com tranquilidade", text: "Preço e estoque conferidos no pedido" }, { icon: MessageCircle, title: "Atendimento pelo WhatsApp", text: "Combine entrega e pagamento com a loja" }].map(({icon: Icon, title, text}) => <div key={title} className="flex items-center gap-3"><Icon size={23} className="shrink-0 text-rose-500" /><div><p className="text-sm font-semibold">{title}</p><p className="mt-1 text-xs text-ink/60">{text}</p></div></div>)}
@@ -33,10 +32,6 @@ export default function HomePage() {
         </div>
         <ProductGrid products={data?.items ?? []} isLoading={isLoading} isError={isError} onRetry={() => refetch()} />
         <p className="px-4 text-sm text-ink/60">Explore todos os produtos, marcas e variações no catálogo completo.</p>
-      </section>
-      <section className="mx-4 mb-10 flex flex-col items-start justify-between gap-5 rounded-3xl bg-rose-50 p-7 sm:flex-row sm:items-center lg:p-10">
-        <div><h2 className="font-display text-2xl">Vamos montar seu pedido?</h2><p className="mt-2 text-sm text-ink/60">Tire suas dúvidas com a Love Mimos antes de escolher.</p></div>
-        <a href="https://wa.me/5531992615667" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full bg-rose-500 px-6 py-3 text-sm font-semibold text-white"><MessageCircle size={18} /> Falar com a loja</a>
       </section>
     </div>
   );

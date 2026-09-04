@@ -1,6 +1,7 @@
 ﻿import type { Product } from "@/types";
 import { searchTerms, normalizeSearchText } from "@/utils/normalize-text";
 import { isProductAvailable } from "@/lib/availability";
+import { cardPrice } from "@/lib/purchase-validation";
 
 /**
  * Sort orders the UI can request. Deliberately small and named for what
@@ -30,6 +31,8 @@ export type ProductQuery = {
    * src/types/index.ts and docs/features/faceted-catalog.md), not a
    * generic facet string. */
   brandSlug?: string;
+  productType?: "simples" | "com-variacoes";
+  availability?: "available" | "sold-out" | "all";
   sort?: ProductSortOrder;
   page?: number; // 1-based
   pageSize?: number;
@@ -107,11 +110,19 @@ export function applyProductQuery(products: Product[], rawQuery: ProductQuery): 
   if (query.categorySlug) {
     results = results.filter((p) => p.categorySlug === query.categorySlug);
   }
+  if (query.departmentSlug) {
+    results = results.filter((p) => p.departmentSlug === query.departmentSlug);
+  }
   if (query.brandSlug) {
     results = results.filter((p) => p.brandSlug === query.brandSlug);
   }
-  if (query.onlyAvailable) {
+  if (query.productType) {
+    results = results.filter((p) => p.productType === query.productType);
+  }
+  if (query.availability === "available" || query.onlyAvailable) {
     results = results.filter(isProductAvailable);
+  } else if (query.availability === "sold-out") {
+    results = results.filter((product) => !isProductAvailable(product));
   }
   if (query.featuredOnly) {
     results = results.filter((p) => Boolean(p.badge));
@@ -129,10 +140,10 @@ export function applyProductQuery(products: Product[], rawQuery: ProductQuery): 
     results = results.filter((p) => p.tags?.some((t) => query.tags!.includes(t)));
   }
   if (query.priceMin !== undefined) {
-    results = results.filter((p) => p.price >= query.priceMin!);
+    results = results.filter((p) => (cardPrice(p) ?? Number.POSITIVE_INFINITY) >= query.priceMin!);
   }
   if (query.priceMax !== undefined) {
-    results = results.filter((p) => p.price <= query.priceMax!);
+    results = results.filter((p) => (cardPrice(p) ?? Number.POSITIVE_INFINITY) <= query.priceMax!);
   }
 
   const terms = query.search ? searchTerms(query.search) : [];
@@ -190,13 +201,7 @@ function scoreMatch(product: Product, terms: string[]): number {
   const shortDescription = normalizeSearchText(product.shortDescription);
   const description = normalizeSearchText(product.description);
   const category = normalizeSearchText(product.categorySlug);
-  const sku = product.sku ? normalizeSearchText(product.sku) : "";
-  const attributeValues = normalizeSearchText(
-    [
-      ...(product.attributes ? Object.values(product.attributes) : []),
-      ...(product.variants ?? []).flatMap((v) => (v.attributes ? Object.values(v.attributes) : [])),
-    ].join(" ")
-  );
+  const brand = normalizeSearchText(product.brandName ?? product.brandSlug ?? "");
 
   let score = 0;
 
@@ -211,16 +216,12 @@ function scoreMatch(product: Product, terms: string[]): number {
       score += 12;
       termMatched = true;
     }
+    if (brand.includes(term)) {
+      score += 14;
+      termMatched = true;
+    }
     if (category.includes(term)) {
-      score += 8;
-      termMatched = true;
-    }
-    if (attributeValues.includes(term)) {
-      score += 8;
-      termMatched = true;
-    }
-    if (sku.includes(term)) {
-      score += 6;
+      score += 10;
       termMatched = true;
     }
     if (description.includes(term)) {
@@ -241,9 +242,9 @@ function sortResults(
 ): Product[] {
   switch (sort) {
     case "menor-preco":
-      return [...products].sort((a, b) => a.price - b.price);
+      return [...products].sort((a, b) => (cardPrice(a) ?? Number.POSITIVE_INFINITY) - (cardPrice(b) ?? Number.POSITIVE_INFINITY));
     case "maior-preco":
-      return [...products].sort((a, b) => b.price - a.price);
+      return [...products].sort((a, b) => (cardPrice(b) ?? Number.NEGATIVE_INFINITY) - (cardPrice(a) ?? Number.NEGATIVE_INFINITY));
     case "nome-asc":
       return [...products].sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
     case "relevancia":

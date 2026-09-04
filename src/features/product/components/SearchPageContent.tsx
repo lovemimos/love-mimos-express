@@ -9,7 +9,7 @@ import DepartmentPills from "@/features/product/components/DepartmentPills";
 import CatalogFilterPanel from "@/features/product/components/CatalogFilterPanel";
 import { Button } from "@/components/ui/button";
 import { useProductQuery, useCategories, useDepartments, useBrands } from "@/hooks/useProducts";
-import type { ProductSortOrder } from "@/lib/repositories/product-query";
+import type { ProductQuery, ProductSortOrder } from "@/lib/repositories/product-query";
 import type { Product } from "@/types";
 
 // Deliberately smaller than Home's page size — this is what makes
@@ -50,7 +50,10 @@ export default function SearchPageContent() {
   const activeCategory = searchParams.get("categoria");
   const department = searchParams.get("departamento") ?? DEFAULT_DEPARTMENT;
   const brand = searchParams.get("marca");
-  const onlyAvailable = searchParams.get("disponivel") === "1";
+  const availability = (searchParams.get("estoque") === "sold-out" || searchParams.get("estoque") === "all" ? searchParams.get("estoque") : "available") as NonNullable<ProductQuery["availability"]>;
+  const productType = (searchParams.get("tipo") === "simples" || searchParams.get("tipo") === "com-variacoes" ? searchParams.get("tipo") : undefined) as ProductQuery["productType"];
+  const priceMin = searchParams.get("precoMin") ? Number(searchParams.get("precoMin")) : undefined;
+  const priceMax = searchParams.get("precoMax") ? Number(searchParams.get("precoMax")) : undefined;
   const sort = readSort(searchParams.get("ordem"));
 
   const [query, setQuery] = useState(urlQuery);
@@ -70,7 +73,10 @@ export default function SearchPageContent() {
     categoria?: string | null;
     departamento?: string;
     marca?: string | null;
-    disponivel?: boolean;
+    estoque?: ProductQuery["availability"];
+    tipo?: ProductQuery["productType"] | null;
+    precoMin?: number;
+    precoMax?: number;
     ordem?: ProductSortOrder;
   }) {
     const params = new URLSearchParams(searchParams.toString());
@@ -88,10 +94,10 @@ export default function SearchPageContent() {
       if (next.marca) params.set("marca", next.marca);
       else params.delete("marca");
     }
-    if (next.disponivel !== undefined) {
-      if (next.disponivel) params.set("disponivel", "1");
-      else params.delete("disponivel");
-    }
+    if (next.estoque !== undefined) next.estoque === "available" ? params.delete("estoque") : params.set("estoque", next.estoque);
+    if (next.tipo !== undefined) next.tipo ? params.set("tipo", next.tipo) : params.delete("tipo");
+    if (next.precoMin !== undefined) Number.isFinite(next.precoMin) ? params.set("precoMin", String(next.precoMin)) : params.delete("precoMin");
+    if (next.precoMax !== undefined) Number.isFinite(next.precoMax) ? params.set("precoMax", String(next.precoMax)) : params.delete("precoMax");
     if (next.ordem !== undefined) {
       if (next.ordem && next.ordem !== "relevancia") params.set("ordem", next.ordem);
       else params.delete("ordem");
@@ -133,7 +139,7 @@ export default function SearchPageContent() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     setQuery("");
     setPage(1);
-    router.replace(`/busca?departamento=${DEFAULT_DEPARTMENT}`, { scroll: false });
+    router.replace("/busca", { scroll: false });
   }
 
   const { data, isLoading, isError, isFetching, isPlaceholderData, refetch } = useProductQuery({
@@ -141,21 +147,24 @@ export default function SearchPageContent() {
     categorySlug: activeCategory || undefined,
     departmentSlug: department,
     brandSlug: brand || undefined,
-    onlyAvailable,
+    availability,
+    productType,
+    priceMin,
+    priceMax,
     sort,
     page,
     pageSize: PAGE_SIZE,
   });
   const { data: categories = [] } = useCategories(department);
   const { data: departments = [] } = useDepartments();
-  const { data: brands = [] } = useBrands(department, activeCategory ?? undefined, onlyAvailable);
+  const { data: brands = [] } = useBrands(department, activeCategory ?? undefined, availability === "available");
 
   // A new filter combination always replaces the visible list; only
   // incrementing the page (via "Carregar mais") appends to it.
   useEffect(() => {
     setPage(1);
     setAccumulated([]);
-  }, [urlQuery, department, activeCategory, brand, onlyAvailable, sort]);
+  }, [urlQuery, department, activeCategory, brand, availability, productType, priceMin, priceMax, sort]);
 
   useEffect(() => {
     if (!data || isPlaceholderData) return;
@@ -166,7 +175,7 @@ export default function SearchPageContent() {
     ? categories.find((c) => c.slug === activeCategory)?.name
     : null;
 
-  const hasFilters = Boolean(urlQuery || activeCategory || brand || onlyAvailable || department !== DEFAULT_DEPARTMENT);
+  const hasFilters = Boolean(urlQuery || activeCategory || brand || productType || availability !== "available" || priceMin !== undefined || priceMax !== undefined || department !== DEFAULT_DEPARTMENT);
 
   return (
     <>
@@ -196,8 +205,13 @@ export default function SearchPageContent() {
         brands={brands}
         brand={brand}
         onBrandChange={(slug) => { setPage(1); updateUrl({ marca: slug }); }}
-        onlyAvailable={onlyAvailable}
-        onOnlyAvailableChange={(value) => { setPage(1); updateUrl({ disponivel: value }); }}
+        productType={productType}
+        onProductTypeChange={(value) => { setPage(1); updateUrl({ tipo: value ?? null }); }}
+        availability={availability}
+        onAvailabilityChange={(value) => { setPage(1); updateUrl({ estoque: value }); }}
+        priceMin={priceMin}
+        priceMax={priceMax}
+        onPriceChange={(min, max) => { setPage(1); updateUrl({ precoMin: min ?? Number.NaN, precoMax: max ?? Number.NaN }); }}
         sort={sort}
         onSortChange={handleSortChange}
       />
