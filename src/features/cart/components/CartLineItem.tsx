@@ -8,11 +8,13 @@ import { formatBRL } from "@/utils/format";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import type { CartLineWithProduct } from "@/types";
 import { availableStock } from "@/lib/availability";
+import { effectivePrice, purchaseIssue } from "@/lib/purchase-validation";
 
 export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
   const setQuantity = useCartStore((s) => s.setQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
-  const unitPrice = line.product.price + (line.variant?.priceModifier ?? 0);
+  const unitPrice = effectivePrice(line.product, line.variantId);
+  const issue = purchaseIssue(line.product, line.variantId, line.quantity);
 
   return (
     <div className="flex gap-4 rounded-2xl bg-neutral-0 p-4 shadow-card">
@@ -46,9 +48,10 @@ export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
             max={availableStock(line.product, line.variantId)}
           />
           <span className="font-display text-sm font-semibold text-rose-500">
-            {formatBRL(unitPrice * line.quantity)}
+            {unitPrice === null ? "Preço indisponível" : formatBRL(unitPrice * line.quantity)}
           </span>
         </div>
+        {issue && <p role="alert" className="mt-2 text-xs text-error-500">{issue}</p>}
       </div>
     </div>
   );

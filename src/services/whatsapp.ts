@@ -1,6 +1,8 @@
 import { STORE_CONFIG } from "@/lib/config";
 import { formatBRL } from "@/utils/format";
 import type { CartLineWithProduct } from "@/types";
+import type { CartLine } from "@/types";
+import { effectivePrice, orderIssue } from "@/lib/purchase-validation";
 
 export type WhatsAppMessageOptions = {
   /** Nome da cliente — opcional, "identificação do cliente (caso exista)"
@@ -27,16 +29,20 @@ export function buildWhatsAppOrderMessage(
   subtotal: number,
   options: WhatsAppMessageOptions = {}
 ): string {
+  const issue = orderIssue(lines);
+  if (issue) throw new Error(issue);
+  // Never trust cached/client-supplied totals or variant objects.
+  subtotal = lines.reduce((sum, line) => sum + effectivePrice(line.product, line.variantId)! * line.quantity, 0);
   const header = `Olá, ${STORE_CONFIG.name}! ✨\nGostaria de fazer o seguinte pedido:\n`;
 
   const items = lines
     .map((line) => {
-      const variantLabel = line.variant ? ` (${line.variant.label})` : "";
-      const unitPrice =
-        line.product.price + (line.variant?.priceModifier ?? 0);
+      const variant = line.product.variants?.find((v) => v.id === line.variantId);
+      const variantLabel = variant ? ` (${variant.label})` : "";
+      const unitPrice = effectivePrice(line.product, line.variantId)!;
       return `• ${line.quantity}x ${line.product.name}${variantLabel} — ${formatBRL(
         unitPrice
-      )} un. — Subtotal: ${formatBRL(line.lineTotal)}`;
+      )} un. — Subtotal: ${formatBRL(unitPrice * line.quantity)}`;
     })
     .join("\n");
 
@@ -50,6 +56,18 @@ export function buildWhatsAppOrderMessage(
   const footer = `\n\nSubtotal: ${formatBRL(subtotal)}\nTotal: ${formatBRL(subtotal)}${customerLine}${noteLine}${appLine}\n\nAguardo a confirmação, obrigada! 💕`;
 
   return `${header}\n${items}${footer}`;
+}
+
+/** Read-only server validation against the current PostgreSQL catalog. */
+export async function requestWhatsAppOrder(lines: CartLine[], options: WhatsAppMessageOptions = {}): Promise<string> {
+  const response = await fetch("/api/checkout/whatsapp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ lines: lines.map(({ productId, variantId, quantity }) => ({ productId, variantId, quantity })), ...options }),
+  });
+  const result = await response.json();
+  if (!response.ok || typeof result.url !== "string") throw new Error(result.error ?? "Não foi possível validar o pedido. Tente novamente.");
+  return result.url;
 }
 
 export function buildWhatsAppUrl(message: string): string {

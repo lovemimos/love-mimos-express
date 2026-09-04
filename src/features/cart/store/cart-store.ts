@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { createSafeLocalStorage } from "@/lib/persist/safe-local-storage";
-import type { CartLine } from "@/types";
+import type { CartLine, Product } from "@/types";
+import { availableStock } from "@/lib/availability";
+import { purchaseIssue } from "@/lib/purchase-validation";
 
 type CartState = {
   lines: CartLine[];
-  addItem: (line: CartLine) => void;
+  addItem: (line: CartLine, product?: Product) => void;
   removeItem: (productId: string, variantId?: string) => void;
   setQuantity: (productId: string, quantity: number, variantId?: string) => void;
   clear: () => void;
@@ -22,8 +24,10 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       lines: [],
-      addItem: (line) =>
+      addItem: (line, product) =>
         set((state) => {
+          if (!Number.isSafeInteger(line.quantity) || line.quantity < 1 || (product && (product.id !== line.productId || purchaseIssue(product, line.variantId, line.quantity)))) return state;
+          const max = product ? Math.floor(availableStock(product, line.variantId)) : Number.MAX_SAFE_INTEGER;
           const existing = state.lines.find((l) =>
             sameLine(l, line.productId, line.variantId)
           );
@@ -34,7 +38,7 @@ export const useCartStore = create<CartState>()(
             return {
               lines: state.lines.map((l) =>
                 sameLine(l, line.productId, line.variantId)
-                  ? { ...l, quantity: l.quantity + line.quantity }
+                  ? { ...l, quantity: Math.min(max, l.quantity + line.quantity) }
                   : l
               ),
             };

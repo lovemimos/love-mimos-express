@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useCartStore } from "@/features/cart/store/cart-store";
 import { useProductQuery } from "@/hooks/useProducts";
 import { buildCart } from "@/services/cart-service";
@@ -15,5 +15,14 @@ export function useCartLines() {
   const productIds = useMemo(() => [...new Set(lines.map((line) => line.productId))], [lines]);
   const { data } = useProductQuery({ productIds, pageSize: Math.max(productIds.length, 1) });
 
-  return useMemo(() => buildCart(lines, data?.items ?? []), [lines, data]);
+  const cart = useMemo(() => buildCart(lines, data?.items ?? []), [lines, data]);
+  useEffect(() => {
+    for (const line of cart.lines) {
+      const original = lines.find((item) => item.productId === line.productId && item.variantId === line.variantId);
+      if (line.quantity > 0 && original?.quantity !== line.quantity) {
+        useCartStore.getState().setQuantity(line.productId, line.quantity, line.variantId);
+      }
+    }
+  }, [cart, lines]);
+  return cart;
 }

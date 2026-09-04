@@ -1,4 +1,6 @@
 import type { Cart, CartLine, CartLineWithProduct, Product } from "@/types";
+import { availableStock } from "@/lib/availability";
+import { effectivePrice } from "@/lib/purchase-validation";
 
 /**
  * Pure cart domain logic, deliberately decoupled from Zustand.
@@ -12,8 +14,7 @@ import type { Cart, CartLine, CartLineWithProduct, Product } from "@/types";
  */
 
 function unitPriceOf(product: Product, variantId?: string): number {
-  const variant = product.variants?.find((v) => v.id === variantId);
-  return product.price + (variant?.priceModifier ?? 0);
+  return effectivePrice(product, variantId) ?? 0;
 }
 
 /**
@@ -32,12 +33,17 @@ export function resolveCartLines(
 
     const variant = product.variants?.find((v) => v.id === line.variantId);
     const unitPrice = unitPriceOf(product, line.variantId);
+    const stock = Math.floor(availableStock(product, line.variantId));
+    const quantity = Number.isSafeInteger(line.quantity) && line.quantity > 0 && stock > 0
+      ? Math.min(line.quantity, stock)
+      : 0;
 
     resolved.push({
       ...line,
+      quantity,
       product,
       variant,
-      lineTotal: unitPrice * line.quantity,
+      lineTotal: unitPrice * quantity,
     });
     return resolved;
   }, []);

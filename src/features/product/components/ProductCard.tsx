@@ -7,6 +7,7 @@ import { formatBRL } from "@/utils/format";
 import { trackEvent } from "@/lib/analytics";
 import type { Product } from "@/types";
 import { isProductAvailable } from "@/lib/availability";
+import { cardPrice } from "@/lib/purchase-validation";
 
 export default function ProductCard({
   product,
@@ -19,10 +20,11 @@ export default function ProductCard({
    * callers don't need to change. */
   analyticsSource?: string;
 }) {
+  const price = cardPrice(product);
   const discount =
-    product.compareAtPrice && product.compareAtPrice > product.price
+    price !== null && product.compareAtPrice && product.compareAtPrice > price
       ? Math.round(
-          ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100
+          ((product.compareAtPrice - price) / product.compareAtPrice) * 100
         )
       : null;
   const outOfStock = !isProductAvailable(product);
@@ -70,9 +72,9 @@ export default function ProductCard({
         )}
         <div className="mt-auto flex items-baseline gap-2 pt-1">
           <span className="font-display text-base font-semibold text-rose-500">
-            {formatBRL(product.price)}
+            {price === null ? "Preço indisponível" : formatBRL(price)}
           </span>
-          {product.compareAtPrice && (
+          {price !== null && product.compareAtPrice && product.compareAtPrice > price && (
             <span className="text-xs text-ink/50 line-through">
               {formatBRL(product.compareAtPrice)}
             </span>

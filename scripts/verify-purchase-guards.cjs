@@ -1,0 +1,45 @@
+// Offline regression tests: no ERP/database writes, no esbuild dependency.
+const ts = require('typescript');
+const fs = require('node:fs');
+const path = require('node:path');
+const Module = require('node:module');
+const assert = require('node:assert/strict');
+const root = path.resolve(__dirname, '..');
+const cache = new Map();
+function load(relative) {
+  const filename = path.join(root, relative);
+  if (cache.has(filename)) return cache.get(filename).exports;
+  const mod = new Module(filename, module); cache.set(filename, mod);
+  mod.filename = filename; mod.paths = module.paths;
+  const original = mod.require.bind(mod);
+  mod.require = id => id.startsWith('@/') ? load('src/' + id.slice(2) + '.ts') : original(id);
+  mod._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText, filename);
+  return mod.exports;
+}
+const guards = load('src/lib/purchase-validation.ts');
+const cart = load('src/services/cart-service.ts');
+const whatsapp = load('src/services/whatsapp.ts');
+const store = load('src/features/cart/store/cart-store.ts').useCartStore;
+const simple = {id:'simple',name:'Normal',price:10,stock:5,active:true,variants:[]};
+const zero = {...simple,id:'zero',price:0};
+const variable = {...simple,id:'variable',price:0,variants:[{id:'five',label:'5 units',priceModifier:42.9,stock:5},{id:'one',label:'1 unit',priceModifier:39.9,stock:1},{id:'sold',priceModifier:39.9,stock:0},{id:'free',priceModifier:0,stock:3}]};
+const line = (p,q=1,v) => ({productId:p.id,product:p,quantity:q,variantId:v,lineTotal:0});
+assert.equal(guards.effectivePrice(zero),null);
+store.getState().clear();store.getState().addItem({productId:zero.id,quantity:1},zero);assert.equal(store.getState().lines.length,0);
+assert.equal(guards.effectivePrice(variable,'five'),42.9);
+assert.equal(guards.effectivePrice(variable),null);
+assert.equal(guards.effectivePrice(variable,'missing'),null);
+assert.equal(guards.cardPrice(variable),39.9);
+assert.ok(guards.purchaseIssue(variable,'sold',1));
+assert.ok(guards.purchaseIssue(variable,'one',5));
+assert.ok(guards.purchaseIssue(variable,'free',1));
+assert.equal(cart.buildCart([{productId:variable.id,variantId:'one',quantity:5}],[variable]).lines[0].quantity,1);
+store.getState().addItem({productId:variable.id,variantId:'one',quantity:1},variable);
+store.getState().addItem({productId:variable.id,variantId:'one',quantity:1},variable);
+assert.equal(store.getState().lines[0].quantity,1);
+for(const l of [line(zero),line(variable,5,'one'),line(variable,1,'sold'),line(variable,1),line(variable,1,'missing'),line(simple,NaN),line(simple,-1),line(simple,1.5)])assert.throws(()=>whatsapp.buildWhatsAppOrderMessage([l],0));
+assert.throws(()=>whatsapp.buildWhatsAppOrderMessage([line(variable,1,'one'),line(variable,1,'one')],0));
+const message=whatsapp.buildWhatsAppOrderMessage([line(simple,2),line(variable,1,'one')],999);
+assert.match(message,/Total: R\$\s*59,90/);assert.match(message,/1 unit/);
+assert.match(whatsapp.buildWhatsAppUrl(message),/^https:\/\/wa.me\/5531992615667/);
+console.log('PASS: zero price, variant/card prices, missing variants, stock, cart clamp, repeated add, malformed quantities, duplicate quantities, WhatsApp validation and canonical totals.');

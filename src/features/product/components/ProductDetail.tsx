@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
@@ -17,51 +17,56 @@ import { sanitizeHtmlForDisplay, containsHtml } from "@/utils/sanitize-html-for-
 import { useCartStore } from "@/features/cart/store/cart-store";
 import RecommendationSection from "@/features/recommendations/components/RecommendationSection";
 import { productRecommendationProvider } from "@/services/recommendations";
-import { buildWhatsAppOrderMessage, buildWhatsAppUrl, tryOpenWhatsApp } from "@/services/whatsapp";
+import { requestWhatsAppOrder, tryOpenWhatsApp } from "@/services/whatsapp";
 import WhatsAppFallbackNotice from "@/components/ui/WhatsAppFallbackNotice";
 import type { Product } from "@/types";
 import { availableStock, isProductAvailable, isVariantAvailable } from "@/lib/availability";
+import { effectivePrice, purchaseIssue } from "@/lib/purchase-validation";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const [variantId, setVariantId] = useState(
-    product.variants?.find(isVariantAvailable)?.id ?? product.variants?.[0]?.id
+    product.variants?.find((v) => isVariantAvailable(v) && effectivePrice(product, v.id) !== null)?.id
   );
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
   const [whatsAppFallbackUrl, setWhatsAppFallbackUrl] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
-  const variant = product.variants?.find((v) => v.id === variantId);
-  const unitPrice = product.price + (variant?.priceModifier ?? 0);
+  const unitPrice = effectivePrice(product, variantId);
   const outOfStock = !isProductAvailable(product);
   const selectedStock = availableStock(product, variantId);
   const selectionUnavailable = Boolean(product.variants?.length) && selectedStock <= 0;
+  const safeQuantity = Math.max(0, Math.min(quantity, Math.floor(selectedStock)));
+  const issue = purchaseIssue(product, variantId, safeQuantity);
+  useEffect(() => { setWhatsAppFallbackUrl(null); setCheckoutError(null); }, [variantId, quantity]);
+
+  function selectVariant(id: string) {
+    setVariantId(id);
+    setQuantity((current) => Math.max(0, Math.min(Math.max(1, current), Math.floor(availableStock(product, id)))));
+    setWhatsAppFallbackUrl(null);
+    setCheckoutError(null);
+  }
 
   function handleAddToCart() {
-    if (outOfStock || selectionUnavailable) return;
-    addItem({ productId: product.id, variantId, quantity });
+    if (issue) return;
+    addItem({ productId: product.id, variantId, quantity: safeQuantity }, product);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1800);
   }
 
-  function handleBuyNow() {
-    if (outOfStock || selectionUnavailable) return;
-    const message = buildWhatsAppOrderMessage(
-      [
-        {
-          productId: product.id,
-          variantId,
-          quantity,
-          product,
-          variant,
-          lineTotal: unitPrice * quantity,
-        },
-      ],
-      unitPrice * quantity
-    );
-    const url = buildWhatsAppUrl(message);
-    const opened = tryOpenWhatsApp(url);
-    setWhatsAppFallbackUrl(opened ? null : url);
+  async function handleBuyNow() {
+    if (issue || checking) return;
+    setChecking(true);
+    setCheckoutError(null);
+    setWhatsAppFallbackUrl(null);
+    try {
+      const url = await requestWhatsAppOrder([{ productId: product.id, variantId, quantity: safeQuantity }]);
+      setWhatsAppFallbackUrl(tryOpenWhatsApp(url) ? null : url);
+    } catch (error) {
+      setCheckoutError(error instanceof Error ? error.message : "Atualize o produto e tente novamente.");
+    } finally { setChecking(false); }
   }
 
   return (
@@ -91,9 +96,9 @@ export default function ProductDetail({ product }: { product: Product }) {
 
         <div className="mt-4 flex items-baseline gap-2">
           <span className="font-display text-h1 text-rose-500">
-            {formatBRL(unitPrice)}
+            {unitPrice === null ? "Preço indisponível" : formatBRL(unitPrice)}
           </span>
-          {product.compareAtPrice && (
+          {unitPrice !== null && product.compareAtPrice && product.compareAtPrice > unitPrice && (
             <span className="text-sm text-ink/50 line-through">
               {formatBRL(product.compareAtPrice)}
             </span>
@@ -110,10 +115,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                 <TogglePill
                   key={v.id}
                   active={variantId === v.id}
-                  onClick={() => setVariantId(v.id)}
-                  disabled={!isVariantAvailable(v)}
+                  onClick={() => selectVariant(v.id)}
+                  disabled={!isVariantAvailable(v) || effectivePrice(product, v.id) === null}
                 >
-                  {v.label}{!isVariantAvailable(v) ? " · indisponível" : ""}
+                  {v.label}{!isVariantAvailable(v) ? " · indisponível" : effectivePrice(product, v.id) === null ? " · preço indisponível" : ""}
                 </TogglePill>
               ))}
             </div>
@@ -124,13 +129,13 @@ export default function ProductDetail({ product }: { product: Product }) {
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink/50">
             Quantidade
           </p>
-          {outOfStock ? (
+          {outOfStock || selectionUnavailable || unitPrice === null ? (
             <p className="inline-flex items-center rounded-full bg-ink/10 px-3 py-1.5 text-sm font-semibold text-ink/60">
-              Produto esgotado
+              {unitPrice === null && !outOfStock ? "Preço indisponível" : "Produto esgotado"}
             </p>
           ) : (
             <>
-              <QuantityStepper value={quantity} onChange={setQuantity} max={selectedStock} />
+              <QuantityStepper value={safeQuantity} onChange={setQuantity} max={Math.floor(selectedStock)} />
               <p className="mt-2 text-xs text-ink/50">{selectedStock} em estoque</p>
             </>
           )}
@@ -171,7 +176,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             variant="secondary"
             size="lg"
             onClick={handleAddToCart}
-            disabled={outOfStock || selectionUnavailable}
+            disabled={Boolean(issue) || checking}
             className={clsx(
               "flex-1 overflow-hidden",
               justAdded && "border-success-500 bg-success-500 text-white"
@@ -202,10 +207,11 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </AnimatePresence>
           </Button>
-          <Button variant="primary" size="lg" onClick={handleBuyNow} disabled={outOfStock || selectionUnavailable} className="flex-1">
-            {outOfStock ? "Esgotado" : selectionUnavailable ? "Variação indisponível" : "Comprar agora"}
+          <Button variant="primary" size="lg" onClick={handleBuyNow} disabled={Boolean(issue) || checking} className="flex-1">
+            {checking ? "Validando..." : outOfStock ? "Esgotado" : unitPrice === null ? "Preço indisponível" : selectionUnavailable ? "Variação indisponível" : "Comprar agora"}
           </Button>
         </div>
+        {checkoutError && <p role="alert" className="mt-2 text-sm text-error-500">{checkoutError}</p>}
         {whatsAppFallbackUrl && <WhatsAppFallbackNotice url={whatsAppFallbackUrl} />}
       </div>
       <div className="h-20" />
