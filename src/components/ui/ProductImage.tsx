@@ -34,7 +34,7 @@ export default function ProductImage({
 
   return (
     <div className={`relative aspect-square overflow-hidden rounded-2xl ${className}`}>
-      <Image src={url} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      <Image src={url} alt={alt} fill sizes={sizes} priority={priority} className="bg-white object-contain" />
     </div>
   );
 }

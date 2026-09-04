@@ -118,7 +118,7 @@ export default function CartPage() {
       />
 
       {/* Sticky checkout bar, sits above the bottom nav */}
-      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto max-w-md border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto max-w-3xl border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur md:bottom-0">
         <WhatsAppCheckoutButton lines={lines} subtotal={subtotal} customerName={customerName} note={note} />
       </div>
       <div className="h-20" />

@@ -17,7 +17,7 @@ export default function BottomNav() {
   const count = useCartCount();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-rose-100 bg-neutral-0/95 backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-rose-100 bg-neutral-0/95 backdrop-blur md:hidden">
       <div className="flex items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
         {ITEMS.map(({ href, label, icon: Icon }) => {
           const active =

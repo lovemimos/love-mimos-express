@@ -172,7 +172,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       />
 
       {/* Sticky CTA bar */}
-      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto w-full max-w-3xl border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto w-full max-w-3xl border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur md:bottom-0">
         <div className="flex gap-2">
           <Button
             variant="secondary"

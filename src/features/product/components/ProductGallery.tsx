@@ -46,7 +46,7 @@ export default function ProductGallery({
 
       {hasRealImages && <button type="button" onClick={() => dialogRef.current?.showModal()} className="mt-2 min-h-11 text-sm font-semibold text-rose-600">Ampliar imagem</button>}
       {count > 1 && (
-        <div className="mt-3 flex flex-wrap justify-center gap-2">
+        <div className="mt-3 flex max-w-full gap-2 overflow-x-auto pb-2" aria-label="Miniaturas do produto">
           {Array.from({ length: count }).map((_, i) =>
             hasRealImages ? (
               <button
@@ -55,7 +55,7 @@ export default function ProductGallery({
                 aria-label={`Ver foto ${i + 1} de ${count}`}
                 aria-current={i === activeIndex}
                 onClick={() => setActiveIndex(i)}
-                className={`h-16 w-16 overflow-hidden rounded-xl border-2 ${i === activeIndex ? "border-rose-500" : "border-rose-100"}`}
+                className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 ${i === activeIndex ? "border-rose-500" : "border-rose-100"}`}
               ><ProductImage images={validImages} index={i} categorySlug={categorySlug} alt={`Miniatura ${i + 1}`} sizes="64px" /></button>
             ) : (
               <span
