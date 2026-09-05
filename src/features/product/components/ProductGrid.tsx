@@ -59,7 +59,7 @@ export default function ProductGrid({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-4 px-4 pb-4" aria-busy="true" aria-label="Carregando produtos">
+      <div className="grid grid-cols-2 gap-3 px-4 pb-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6" aria-busy="true" aria-label="Carregando produtos">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="overflow-hidden rounded-2xl bg-neutral-0 shadow-card">
             <div className="aspect-square animate-pulse bg-rose-100/60" />
@@ -94,10 +94,10 @@ export default function ProductGrid({
       variants={container}
       initial="hidden"
       animate="show"
-      className="grid grid-cols-2 gap-4 px-4 pb-4"
+      className="grid grid-cols-2 gap-3 px-4 pb-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-6"
     >
       {products.map((product) => (
-        <motion.div key={product.id} variants={item}>
+        <motion.div key={product.id} variants={item} className="flex min-w-0 [&>a]:w-full">
           <ProductCard product={product} />
         </motion.div>
       ))}

@@ -37,7 +37,7 @@ export default function ProductCard({
           trackEvent({ name: "product_click", productId: product.id, source: analyticsSource });
         }
       }}
-      className="group flex flex-col overflow-hidden rounded-2xl bg-neutral-0 shadow-card transition active:scale-[0.98]"
+      className="group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-rose-100/70 bg-neutral-0 transition hover:shadow-soft active:scale-[0.98]"
     >
       <div className="relative p-2">
         <ProductImage
@@ -64,15 +64,16 @@ export default function ProductCard({
         )}
       </div>
       <div className="flex flex-1 flex-col gap-2 px-4 pb-4 pt-1">
+        {product.brandName && <p className="text-micro font-semibold uppercase tracking-wide text-ink/50">{product.brandName}</p>}
         <h3 className="line-clamp-2 text-title text-ink">
           {product.name}
         </h3>
         {product.rating && (
           <Rating value={product.rating} count={product.reviewCount} />
         )}
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
+        <div className="mt-auto flex flex-wrap items-baseline gap-2 pt-1">
           <span className="font-display text-base font-semibold text-rose-500">
-            {price === null ? "Preço indisponível" : formatBRL(price)}
+            {price === null ? "Preço indisponível" : <>{product.variants?.length ? <span className="block font-sans text-micro font-normal text-ink/50">A partir de</span> : null}{formatBRL(price)}</>}
           </span>
           {price !== null && product.compareAtPrice && product.compareAtPrice > price && (
             <span className="text-xs text-ink/50 line-through">
@@ -80,6 +81,7 @@ export default function ProductCard({
             </span>
           )}
         </div>
+        <span className="mt-2 flex min-h-10 items-center justify-center rounded-full bg-rose-50 px-2 text-xs font-semibold text-rose-700">{outOfStock ? "Ver detalhes" : product.variants?.length ? "Escolher variação" : "Ver produto"}</span>
       </div>
     </Link>
   );

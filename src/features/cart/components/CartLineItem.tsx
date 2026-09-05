@@ -22,7 +22,7 @@ export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
         <ProductImage images={line.product.images} categorySlug={line.product.categorySlug} alt={line.product.name} />
       </Link>
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col [overflow-wrap:anywhere]">
         <div className="flex items-start justify-between gap-2">
           <Link href={`/produto/${line.product.slug}`} className="min-w-0">
             <h3 className="line-clamp-2 text-title text-ink">
@@ -41,7 +41,8 @@ export default function CartLineItem({ line }: { line: CartLineWithProduct }) {
           </button>
         </div>
 
-        <div className="mt-auto flex items-center justify-between pt-2">
+        {unitPrice !== null && <p className="mt-2 text-xs text-ink/60">{formatBRL(unitPrice)} por unidade</p>}
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
           <QuantityStepper
             value={line.quantity}
             onChange={(q) => setQuantity(line.productId, q, line.variantId)}

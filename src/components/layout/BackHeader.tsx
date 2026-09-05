@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
 export default function BackHeader({
@@ -35,6 +36,7 @@ export default function BackHeader({
         <ChevronLeft size={19} />
       </button>
       <h1 className="font-display text-lg font-semibold text-plum">{title}</h1>
+      <nav aria-label="Loja" className="ml-auto hidden items-center gap-6 text-sm font-semibold text-rose-600 md:flex"><Link href="/">Início</Link><Link href="/busca">Catálogo</Link><Link href="/carrinho">Carrinho</Link></nav>
     </header>
   );
 }

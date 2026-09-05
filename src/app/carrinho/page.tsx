@@ -8,7 +8,6 @@ import BackHeader from "@/components/layout/BackHeader";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/ui/EmptyState";
 import CartLineItem from "@/features/cart/components/CartLineItem";
-import FreeShippingBar from "@/features/cart/components/FreeShippingBar";
 import WhatsAppCheckoutButton from "@/features/cart/components/WhatsAppCheckoutButton";
 import { useCartLines } from "@/features/cart/hooks/useCartLines";
 import { useCartStore } from "@/features/cart/store/cart-store";
@@ -38,12 +37,10 @@ export default function CartPage() {
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-3xl">
       <BackHeader title={`Carrinho · ${itemCount} ${itemCount === 1 ? "item" : "itens"}`} />
 
-      <div className="pt-4">
-        <FreeShippingBar subtotal={subtotal} />
-      </div>
+      <p className="px-4 py-5 text-sm text-ink/60">Confira suas escolhas. Entrega e pagamento serão combinados no WhatsApp.</p>
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -121,7 +118,7 @@ export default function CartPage() {
       />
 
       {/* Sticky checkout bar, sits above the bottom nav */}
-      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto max-w-md border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto max-w-3xl border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur md:bottom-0">
         <WhatsAppCheckoutButton lines={lines} subtotal={subtotal} customerName={customerName} note={note} />
       </div>
       <div className="h-20" />

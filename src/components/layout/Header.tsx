@@ -1,18 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Search } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useCartCount } from "@/features/cart/store/cart-store";
 import { useFavoritesCount } from "@/features/favorites/store/favorites-store";
 
-export default function Header() {
+export default function Header({ showSearch = true }: { showSearch?: boolean }) {
   const cartCount = useCartCount();
   const favoritesCount = useFavoritesCount();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-rose-100/70 bg-cream/90 px-4 py-4 backdrop-blur">
-      <BrandLogo variant="full" theme="dark" size="sm" />
+    <header className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-3 border-b border-rose-100/70 bg-white/95 px-4 py-4 backdrop-blur lg:px-10 lg:py-6">
+      <Link href="/" aria-label="Love Mimos Express — início"><BrandLogo variant="full" theme="dark" size="sm" /></Link>
+      {showSearch && <form action="/busca" className="order-last flex w-full items-center rounded-full border border-rose-100 bg-rose-50/50 px-4 sm:order-none sm:w-auto sm:flex-1 sm:max-w-md">
+        <input name="q" aria-label="Buscar produtos" placeholder="O que você procura hoje?" className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none" />
+        <button aria-label="Buscar" className="flex h-11 w-11 shrink-0 items-center justify-center text-rose-600"><Search size={20} /></button>
+      </form>}
       <div className="flex items-center gap-2">
         <Link
           href="/favoritos"

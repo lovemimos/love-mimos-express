@@ -33,10 +33,14 @@ function buildProductsUrl(query: ProductQuery): string {
   if (query.categorySlug) params.set("categoria", query.categorySlug);
   if (query.departmentSlug) params.set("departamento", query.departmentSlug);
   if (query.brandSlug) params.set("marca", query.brandSlug);
+  if (query.productType) params.set("tipo", query.productType);
+  if (query.availability) params.set("estoque", query.availability);
   if (query.sort) params.set("ordem", query.sort);
   if (query.page) params.set("pagina", String(query.page));
   if (query.pageSize) params.set("limite", String(query.pageSize));
   if (query.onlyAvailable) params.set("disponivel", "1");
+  if (query.priceMin !== undefined) params.set("precoMin", String(query.priceMin));
+  if (query.priceMax !== undefined) params.set("precoMax", String(query.priceMax));
   if (query.featuredOnly) params.set("destaque", "1");
   if (query.badge) params.set("badge", query.badge);
   const qs = params.toString();

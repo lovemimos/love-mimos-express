@@ -59,7 +59,7 @@ export default function HomeSection({
   if (!isLoading && isEmpty) return null;
 
   return (
-    <section className="mb-6">
+    <section className="mb-6 pt-8">
       <HomeSectionTitle title={title} ctaLabel={ctaLabel} ctaHref={ctaHref} onCtaClick={onCtaClick} />
       {isLoading ? loadingSkeleton ?? <DefaultCarouselSkeleton /> : children}
     </section>

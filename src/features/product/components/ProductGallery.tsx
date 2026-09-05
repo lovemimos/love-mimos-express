@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import ProductImage from "@/components/ui/ProductImage";
 import ProductImagePlaceholder from "@/components/ui/ProductImagePlaceholder";
 import { normalizeImageUrls } from "@/utils/normalize-image-url";
@@ -22,12 +22,14 @@ export default function ProductGallery({
   productName: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const validImages = normalizeImageUrls(images);
   const hasRealImages = validImages.length > 0;
   const count = Math.max(validImages.length, 1);
 
   return (
-    <div className="px-4 pt-4">
+    <div className="min-w-0 px-4 pt-4">
+      <div className="mx-auto max-w-xl">
       {hasRealImages ? (
         <ProductImage
           images={images}
@@ -42,8 +44,9 @@ export default function ProductGallery({
         <ProductImagePlaceholder categorySlug={categorySlug} className="rounded-3xl" />
       )}
 
+      {hasRealImages && <button type="button" onClick={() => dialogRef.current?.showModal()} className="mt-2 min-h-11 text-sm font-semibold text-rose-600">Ampliar imagem</button>}
       {count > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-3 flex max-w-full gap-2 overflow-x-auto pb-2" aria-label="Miniaturas do produto">
           {Array.from({ length: count }).map((_, i) =>
             hasRealImages ? (
               <button
@@ -52,10 +55,8 @@ export default function ProductGallery({
                 aria-label={`Ver foto ${i + 1} de ${count}`}
                 aria-current={i === activeIndex}
                 onClick={() => setActiveIndex(i)}
-                className={
-                  i === activeIndex ? "h-1.5 w-5 rounded-full bg-rose-500" : "h-1.5 w-1.5 rounded-full bg-rose-100"
-                }
-              />
+                className={`h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 ${i === activeIndex ? "border-rose-500" : "border-rose-100"}`}
+              ><ProductImage images={validImages} index={i} categorySlug={categorySlug} alt={`Miniatura ${i + 1}`} sizes="64px" /></button>
             ) : (
               <span
                 key={i}
@@ -66,6 +67,11 @@ export default function ProductGallery({
           )}
         </div>
       )}
+      </div>
+      <dialog ref={dialogRef} aria-label={`Imagem ampliada de ${productName}`} className="w-[calc(100%-32px)] max-w-2xl rounded-2xl p-4 backdrop:bg-black/60">
+        <form method="dialog" className="mb-3 flex justify-end"><button className="min-h-11 rounded-full border border-rose-100 px-5 text-sm font-semibold">Fechar imagem</button></form>
+        <ProductImage images={validImages} index={activeIndex} categorySlug={categorySlug} alt={productName} sizes="(max-width: 700px) 90vw, 640px" />
+      </dialog>
     </div>
   );
 }

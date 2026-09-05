@@ -72,16 +72,17 @@ export default function ProductDetail({ product }: { product: Product }) {
   return (
     <div>
       <BackHeader title="Detalhes do produto" />
+      <div className="grid min-w-0 gap-5 pb-8 lg:grid-cols-2 lg:gap-10 lg:py-8">
       <ProductGallery images={product.images} categorySlug={product.categorySlug} productName={product.name} />
 
-      <div className="px-4 pt-4">
+      <div className="min-w-0 px-4 pt-4 [overflow-wrap:anywhere]">
         {product.badge && (
           <div className="mb-2">
             <ProductBadge type={product.badge} />
           </div>
         )}
         <div className="flex items-start justify-between gap-3">
-          <h1 className="font-display text-lg font-semibold leading-snug text-plum">
+          <h1 className="font-display text-2xl font-semibold leading-snug text-plum lg:text-3xl">
             {product.name}
           </h1>
           <FavoriteButton productId={product.id} className="shrink-0" />
@@ -161,6 +162,7 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
         </div>
       </div>
+      </div>
 
       <RecommendationSection
         provider={productRecommendationProvider}
@@ -170,7 +172,7 @@ export default function ProductDetail({ product }: { product: Product }) {
       />
 
       {/* Sticky CTA bar */}
-      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto max-w-md border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-[64px] z-30 mx-auto w-full max-w-3xl border-t border-rose-100 bg-neutral-0/95 px-4 py-4 backdrop-blur md:bottom-0">
         <div className="flex gap-2">
           <Button
             variant="secondary"
@@ -178,7 +180,7 @@ export default function ProductDetail({ product }: { product: Product }) {
             onClick={handleAddToCart}
             disabled={Boolean(issue) || checking}
             className={clsx(
-              "flex-1 overflow-hidden",
+              "min-w-0 flex-1 whitespace-normal text-center",
               justAdded && "border-success-500 bg-success-500 text-white"
             )}
           >
@@ -207,7 +209,7 @@ export default function ProductDetail({ product }: { product: Product }) {
               )}
             </AnimatePresence>
           </Button>
-          <Button variant="primary" size="lg" onClick={handleBuyNow} disabled={Boolean(issue) || checking} className="flex-1">
+          <Button variant="primary" size="lg" onClick={handleBuyNow} disabled={Boolean(issue) || checking} className="min-w-0 flex-1 whitespace-normal text-center">
             {checking ? "Validando..." : outOfStock ? "Esgotado" : unitPrice === null ? "Preço indisponível" : selectionUnavailable ? "Variação indisponível" : "Comprar agora"}
           </Button>
         </div>

@@ -10,10 +10,10 @@ module.exports = {
     extend: {
       colors: {
         // Love Mimos Express — token system
-        cream: "#FFFBF8", // base background
+        cream: "#FFFFFF", // base background
         plum: {
-          DEFAULT: "#3B0F2B", // deep plum — brand ink / dark surfaces
-          light: "#5A1F44",
+          DEFAULT: "#211D20", // neutral brand contrast
+          light: "#41363D",
         },
         rose: {
           50: "#FDF1F4",

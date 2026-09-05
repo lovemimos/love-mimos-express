@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
+import Footer from "@/components/layout/Footer";
 import { BrandSplash } from "@/components/brand/BrandSplash";
 import { QueryProvider } from "@/app/providers";
+import FloatingWhatsApp from "@/components/layout/FloatingWhatsApp";
 
 export const metadata: Metadata = {
   // TODO: trocar pelo domínio real antes do lançamento — sem isso, os
@@ -10,10 +12,10 @@ export const metadata: Metadata = {
   // padrão de placeholder já usado para o número do WhatsApp em
   // src/lib/config.ts. Pode ser sobrescrito via NEXT_PUBLIC_SITE_URL
   // (não é segredo — é a própria URL pública da loja).
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://lovemimos.example.com"),
-  title: "Love Mimos Express | Produtos para Lash Designers",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://love-mimos-express-sabg.vercel.app"),
+  title: { default: "Love Mimos Express | Lash, Nail e Beauty", template: "%s | Love Mimos Express" },
   description:
-    "Mini loja Love Mimos Express — cílios, colas, pinças e mimos premium para Lash Designers. Peça em segundos direto pelo WhatsApp.",
+    "Materiais para lash, nail e beauty designers. Explore produtos, escolha suas variações e monte seu pedido com atendimento pelo WhatsApp.",
   manifest: "/manifest.webmanifest",
   openGraph: {
     title: "Love Mimos Express",
@@ -61,8 +63,10 @@ export default function RootLayout({
       <body className="bg-cream text-ink font-sans antialiased">
         <BrandSplash />
         <QueryProvider>
-          <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-cream shadow-2xl">
+          <div className="store-shell mx-auto flex min-h-dvh w-full max-w-7xl flex-col bg-white">
             <main className="flex-1 pb-24">{children}</main>
+            <Footer />
+            <FloatingWhatsApp />
             <BottomNav />
           </div>
         </QueryProvider>
