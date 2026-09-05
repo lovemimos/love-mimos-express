@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { applyProductQuery, normalizeProductQuery } from "./product-query";
+import { applyProductQuery, MAX_PAGE_SIZE, normalizeProductQuery } from "./product-query";
 import type { Product } from "@/types";
 import { normalizeSearchText } from "@/utils/normalize-text";
 
@@ -294,7 +294,7 @@ describe("normalizeProductQuery — parâmetros inválidos têm fallback seguro"
   });
 
   it("limite acima do permitido é reduzido ao máximo", () => {
-    expect(normalizeProductQuery({ pageSize: 99999 }).pageSize).toBeLessThanOrEqual(100);
+    expect(normalizeProductQuery({ pageSize: 99999 }).pageSize).toBe(MAX_PAGE_SIZE);
   });
 
   it("limite zero ou negativo cai para o padrão", () => {
